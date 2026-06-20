@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelipatan dan Faktor - Masterclass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. CORE SETUP & LAPOUT OPTIMIZED FOR 14" LAPTOP */
+        * { box-sizing: border-box; }
+        body { 
+            background-color: #cbd5e1; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 25px; 
+            margin: 0; 
+            padding: 25px 0; 
+            align-items: center; 
+        }
+        
+        .slide-container {
+            background-color: #ffffff;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Lato', sans-serif;
+            height: 620px; /* Diperkecil untuk Laptop 14 Inci */
+            justify-content: flex-start;
+            overflow: hidden;
+            padding: 45px 50px;
+            position: relative;
+            width: 1100px; /* Diperkecil untuk Laptop 14 Inci */
+            border-radius: 12px;
+        }
+
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #4f46e5, #10b981);
+            z-index: 2;
+        }
+
+        /* 2. TYPOGRAPHY & OBJECTS */
+        h1, h2, h3 { color: #1e293b; font-weight: 700; font-family: 'Poppins', sans-serif; margin: 0; }
+        h1 { font-size: 60px; }
+        .slide-title { font-size: 34px; font-weight: 600; margin-bottom: 25px; text-align: left; width: 100%; border-bottom: 4px solid #10b981; padding-bottom: 8px; color: #1e293b;}
+        h3 { font-size: 26px; font-weight: 600; margin-bottom: 12px; color: #4f46e5; }
+        p, li { color: #475569; font-size: 19px; line-height: 1.5; }
+
+        .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; align-items: center; }
+        .tiled-content { display: flex; gap: 25px; justify-content: center; width: 100%; align-items: stretch; }
+        
+        .tile { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; flex: 1; padding: 25px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .tile .icon { color: #10b981; font-size: 45px; margin-bottom: 15px; }
+        
+        .bullet-list { list-style: none; padding: 0; }
+        .bullet-list li { position: relative; padding-left: 45px; margin-bottom: 20px; font-size: 20px; }
+        .bullet-list i { color: #10b981; font-size: 26px; left: 0; position: absolute; top: 2px; }
+
+        .image-wrapper { border-radius: 12px; overflow: hidden; height: 300px; width: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .image-wrapper img { height: 100%; width: 100%; object-fit: cover; }
+
+        /* 3. BUTTONS & INPUTS */
+        .btn { background: #4f46e5; border: none; border-radius: 8px; color: white; cursor: pointer; font-family: 'Poppins'; font-size: 16px; font-weight: 600; padding: 12px 25px; transition: 0.2s; text-decoration: none; display: inline-block; text-align: center;}
+        .btn:hover { background: #4338ca; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25); }
+        .btn-check { background: #10b981; }
+        .btn-check:hover { background: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25); }
+
+        .input-box { border: 2px solid #cbd5e1; border-radius: 8px; font-size: 20px; padding: 8px; width: 120px; text-align: center; outline: none; font-weight: bold; transition: 0.2s; }
+        .input-box:focus { border-color: #4f46e5; }
+        .input-box.correct { border-color: #10b981 !important; background: #ecfdf5 !important; color: #065f46; }
+        .input-box.wrong { border-color: #ef4444 !important; background: #fef2f2 !important; color: #991b1b; }
+
+        .discussion { display: none; margin-top: 15px; padding: 15px; background: #fffbeb; border-left: 5px solid #eab308; color: #854d0e; font-size: 17px; border-radius: 0 8px 8px 0; }
+        .q-label { font-weight: bold; margin-top: 10px; margin-bottom: 3px; color: #1e293b; }
+
+        /* 4. GAME COMPONENTS STYLES */
+        .match-container { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 30px; width: 850px; margin: 0 auto; }
+        .match-column { display: flex; flex-direction: column; gap: 10px; }
+        .match-item { background: #f1f5f9; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; padding: 10px 15px; text-align: center; font-weight: 700; font-size: 18px; transition: 0.2s; user-select: none; }
+        .match-item:hover { background: #e2e8f0; }
+        .match-item.selected { border-color: #4f46e5; background: #e0e7ff; color: #3730a3; }
+        .match-item.correct { background: #10b981; color: white; border-color: #10b981; pointer-events: none; }
+
+        .factor-table { border-collapse: collapse; margin: 0 auto; width: 400px; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .factor-table th { border: 2px solid #cbd5e1; padding: 12px; text-align: center; font-size: 24px; background: #f1f5f9; color: #1e293b; }
+        .factor-table td { border: 2px solid #cbd5e1; padding: 8px; text-align: center; width: 50%; }
+        .factor-table input { width: 100%; border: none; text-align: center; font-size: 22px; font-weight: 700; outline: none; padding: 4px; background: transparent; }
+
+        .rapid-fire-box { background: #1e293b; color: white; border-radius: 20px; padding: 40px; text-align: center; min-height: 320px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
+        .rapid-fire-box h2 { color: #ffffff; font-size: 36px; margin: 20px 0; font-weight: 600; }
+        
+        .slide-number-indicator { position: absolute; bottom: 15px; right: 25px; font-size: 13px; color: #94a3b8; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container" id="slide1">
+        <div class="content-area" style="text-align: center;">
+            <div style="background: #10b981; height: 6px; width: 140px; margin: 0 auto 20px; border-radius: 3px;"></div>
+            <h1>Kelipatan <span style="color: #4f46e5;">&</span> Faktor</h1>
+            <p style="font-size: 26px; margin-top: 10px; color: #64748b; font-family: 'Poppins';">Petualangan Berhitung Menggunakan Angka</p>
+            <div class="image-wrapper" style="margin-top: 30px; height: 260px;">
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1200&q=80" alt="Math Graphic">
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 1 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide2">
+        <h2 class="slide-title">Mari Berpikir Sejenak! 🤔</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <h3>Kapan Bunyi Bersama?</h3>
+                    <p style="font-size: 17px;">Jika alarm ponselmu berbunyi setiap <b>10 menit</b> dan alarm jam dinding berbunyi setiap <b>15 menit</b>, kapan kedua alarm tersebut akan berbunyi di waktu yang sama?</p>
+                </div>
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-cookie-bite"></i></div>
+                    <h3>Berbagi Rata</h3>
+                    <p style="font-size: 17px;">Kamu memiliki <b>12 kotak susu</b>. Berapa saja jumlah kelompok teman yang bisa membagi habis susu tersebut tanpa sisa sama sekali?</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 2 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide3">
+        <h2 class="slide-title">Tujuan Pembelajaran Kita</h2>
+        <div class="content-area">
+            <p style="font-size: 22px; text-align: center; margin-bottom: 30px; color: #1e293b;">Hari ini, kita akan menguasai dua keahlian matematika yang sangat penting:</p>
+            <div class="tiled-content">
+                <div class="tile" style="border-top: 6px solid #4f46e5;">
+                    <div class="icon" style="color:#4f46e5;"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                    <h3>Menentukan Kelipatan</h3>
+                    <p style="font-size: 18px;">Siswa dapat dengan lancar dan tepat menentukan nilai kelipatan dari suatu bilangan asli.</p>
+                </div>
+                <div class="tile" style="border-top: 6px solid #10b981;">
+                    <div class="icon" style="color:#10b981;"><i class="fa-solid fa-arrows-split-up-and-left"></i></div>
+                    <h3>Menentukan Faktor</h3>
+                    <p style="font-size: 18px;">Siswa dapat mencari dan mendaftarkan seluruh faktor pembagi habis dari suatu bilangan asli.</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 3 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide4">
+        <h2 class="slide-title">Apa itu Kelipatan Bilangan?</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <h3>Definisi</h3>
+                    <p><b>Kelipatan</b> adalah hasil perkalian suatu bilangan tertentu dengan bilangan asli secara berurutan (1, 2, 3, 4, 5, dst).</p>
+                    
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-top: 20px; border-left: 5px solid #4f46e5;">
+                        <p style="margin: 0; font-weight: bold;">Contoh Kelipatan 4:</p>
+                        <p style="margin: 5px 0 0 0; font-family: 'Poppins'; font-size: 22px; color: #4f46e5;">4, 8, 12, 16, 20, 24, 28, ...</p>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px; font-size: 22px; color: #1e293b;"><i class="fa-solid fa-wand-magic-sparkles" style="color: #eab308;"></i> Penggunaan di Dunia Nyata:</h3>
+                    <p style="font-size: 16px; margin: 5px 0;">Menghitung jadwal rute bus, siklus putaran orbit, ketukan tempo musik, dan mencari KPK.</p>
+                </div>
+                <div class="image-wrapper" style="height: 260px;">
+                    <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80" alt="Math blocks">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 4 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide5">
+        <h2 class="slide-title">Tantangan: Pasangkan dengan Daftar Kelipatannya</h2>
+        <div class="content-area">
+            <p style="text-align: center; margin-top: 0; margin-bottom: 20px; font-weight: bold; color: #4f46e5; font-size: 17px;">Petunjuk: Klik 1 angka di kiri, lalu cari rangkaian daftar kelipatannya yang benar di sebelah kanan!</p>
+            <div class="match-container">
+                <div class="match-column" id="match-left">
+                    <div class="match-item" onclick="matchClick(this, 'L', 3)">3</div>
+                    <div class="match-item" onclick="matchClick(this, 'L', 5)">5</div>
+                    <div class="match-item" onclick="matchClick(this, 'L', 7)">7</div>
+                    <div class="match-item" onclick="matchClick(this, 'L', 12)">12</div>
+                    <div class="match-item" onclick="matchClick(this, 'L', 20)">20</div>
+                </div>
+                <div class="match-column" id="match-right">
+                    <div class="match-item" onclick="matchClick(this, 'R', 20)">20, 40, 60, 80, 100, ...</div>
+                    <div class="match-item" onclick="matchClick(this, 'R', 7)">7, 14, 21, 28, 35, ...</div>
+                    <div class="match-item" onclick="matchClick(this, 'R', 12)">12, 24, 36, 48, 60, ...</div>
+                    <div class="match-item" onclick="matchClick(this, 'R', 5)">5, 10, 15, 20, 25, ...</div>
+                    <div class="match-item" onclick="matchClick(this, 'R', 3)">3, 6, 9, 12, 15, ...</div>
+                </div>
+            </div>
+            <p id="match-feedback" style="text-align: center; margin-top: 20px; font-weight: bold; font-size: 20px; height: 30px; color: #10b981;"></p>
+        </div>
+        <div class="slide-number-indicator">Slide 5 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide6">
+        <h2 class="slide-title">Game: Estafet Kelipatan! ⏱️</h2>
+        <div class="content-area">
+            <div class="two-column" style="align-items: center;">
+                <div style="text-align: center; background: #f8fafc; padding: 25px; border-radius: 20px; border: 2px dashed #cbd5e1;">
+                    <div id="random-num" style="font-size: 100px; font-weight: 800; color: #4f46e5; line-height: 1;">?</div>
+                    <p style="font-weight: bold; font-size: 18px; color: #475569; margin-top: 5px;">Angka Terpilih</p>
+                    <button class="btn" onclick="triggerRandomizer()"><i class="fa-solid fa-dice"></i> ACAK BILANGAN (1-10)</button>
+                </div>
+                <div>
+                    <div class="tile" style="text-align: left; background: #ffffff; border: 1px solid #e2e8f0; padding: 20px;">
+                        <h3 style="color: #1e293b; font-size: 22px;"><i class="fa-solid fa-gamepad" style="color: #4f46e5;"></i> Aturan Bermain:</h3>
+                        <p style="font-size: 16px; margin-bottom: 12px;">Tekan tombol acak. Urutkan kelipatannya dari yang pertama secara bergantian tanpa putus!</p>
+                        <div style="display: flex; flex-direction: column; gap: 8px; background: #f1f5f9; padding: 12px; border-radius: 10px;">
+                            <div id="game-turn" style="font-weight: bold; font-size: 18px; color: #4f46e5;">Giliran: Siswa A</div>
+                            <div id="game-step" style="font-weight: bold; font-size: 18px; color: #10b981;">Sebutkan Kelipatan Ke: 1</div>
+                        </div>
+                        <button class="btn btn-check" onclick="advanceGameStep()" style="margin-top: 12px; width: 100%;">LANJUTKAN GILIRAN &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 6 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide7">
+        <h2 class="slide-title">Apa itu Faktor Bilangan?</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <h3>Definisi</h3>
+                    <p><b>Faktor</b> adalah semua bilangan asli yang dapat membagi habis suatu bilangan tertentu tanpa menyisakan sisa pembagian.</p>
+                    <p style="margin-top: 10px;">Cara paling mudah mencarinya adalah mendaftarkan seluruh pasangan perkalian yang menghasilkan bilangan tersebut.</p>
+                    
+                    <h3 style="margin-top: 20px; font-size: 22px; color: #1e293b;"><i class="fa-solid fa-toolbox" style="color: #10b981;"></i> Penggunaan di Dunia Nyata:</h3>
+                    <p style="font-size: 16px; margin: 5px 0;">Membagi jatah logistik, menata formasi barisan ubin lantai, memotong kue sama rata, dan menentukan FPB.</p>
+                </div>
+                <div>
+                    <div style="background: #ecfdf5; padding: 20px; border-radius: 16px; border: 2px solid #a7f3d0; text-align: center;">
+                        <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 18px;">Contoh Tabel Faktor untuk Angka 12</p>
+                        <table style="width: 100%; border-collapse: collapse; background: white; font-size: 18px; font-weight: bold;">
+                            <tr style="background:#10b981; color: white;"><td colspan="2" style="padding: 8px; border: 2px solid #10b981;">12</td></tr>
+                            <tr><td style="padding: 8px; border: 2px solid #cbd5e1;">1</td><td style="padding: 8px; border: 2px solid #cbd5e1;">12</td></tr>
+                            <tr><td style="padding: 8px; border: 2px solid #cbd5e1;">2</td><td style="padding: 8px; border: 2px solid #cbd5e1;">6</td></tr>
+                            <tr><td style="padding: 8px; border: 2px solid #cbd5e1;">3</td><td style="padding: 8px; border: 2px solid #cbd5e1;">4</td></tr>
+                        </table>
+                        <p style="margin-top: 10px; margin-bottom:0; font-size: 16px; font-weight: bold; color: #065f46;">Faktor dari 12 adalah: 1, 2, 3, 4, 6, 12</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 7 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide8">
+        <h2 class="slide-title">Laboratorium Faktor 🧪</h2>
+        <div class="content-area">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <p style="margin:0; font-size: 18px;">Lengkapi tabel perkalian faktor berikut untuk bilangan:</p>
+                <h1 id="factor-target-display" style="color: #4f46e5; margin: 5px 0; font-size: 50px;">18</h1>
+            </div>
+            
+            <table class="factor-table">
+                <thead>
+                    <tr><th colspan="2" id="factor-table-header">18</th></tr>
+                </thead>
+                <tbody id="factor-table-body">
+                    </tbody>
+            </table>
+            
+            <div style="text-align: center; margin-top: 20px; display: flex; gap: 15px; justify-content: center;">
+                <button class="btn btn-check" onclick="verifyFactorInputs()"><i class="fa-solid fa-square-check"></i> CEK JAWABAN</button>
+                <button class="btn" style="background: #64748b;" onclick="switchFactorTarget()"><i class="fa-solid fa-rotate"></i> GANTI BILANGAN</button>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 8 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide9">
+        <h2 class="slide-title">Kuis Jawab Cepat! ⚡</h2>
+        <div class="content-area">
+            <div class="rapid-fire-box">
+                <p id="rapid-index-label" style="color: #a3e635; font-weight: bold; font-size: 18px; margin: 0; letter-spacing: 1px;">PERTANYAAN 1 / 20</p>
+                <h2 id="rapid-question-text">Apakah 3 merupakan faktor dari 15?</h2>
+                <div style="display: flex; gap: 25px; justify-content: center; margin-top: 15px;">
+                    <button class="btn btn-check" style="font-size: 24px; padding: 12px 50px; border-radius: 10px;" onclick="submitRapidAnswer(true)">YA</button>
+                    <button class="btn" style="background: #ef4444; font-size: 24px; padding: 12px 50px; border-radius: 10px;" onclick="submitRapidAnswer(false)">TIDAK</button>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 9 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide10">
+        <h2 class="slide-title">Soal Cerita Kelipatan (KPK) - Tantangan #1</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <p style="font-size: 19px;">Andi mengunjungi perpustakaan setiap <b>6 hari sekali</b>, sedangkan Budi setiap <b>8 hari sekali</b>. Jika mereka bertemu di perpustakaan hari ini, berapa hari lagi mereka akan bertemu bersama kembali?</p>
+                    <div style="margin-top: 20px; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center;">
+                        <span class="q-label">Berapa Nilai KPK?</span>
+                        <input type="number" class="input-box" id="kpk-q1-kpk">
+                        
+                        <span class="q-label">Jawaban Akhir (Hari):</span>
+                        <input type="number" class="input-box" id="kpk-q1-ans">
+                    </div>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn btn-check" onclick="evaluateStoryQuestion('kpk', 1, 24, 24)">CEK JAWABAN</button>
+                        <button class="btn" style="background: #f59e0b;" onclick="revealExplanation('kpk1')">PEMBAHASAN</button>
+                    </div>
+                    <div id="explanation-kpk1" class="discussion">
+                        <b>Pembahasan:</b> KPK dari 6 dan 8.<br>
+                        Kelipatan 6: 6, 12, 18, <b>24</b>, 30...<br>
+                        Kelipatan 8: 8, 16, <b>24</b>, 32... <br>Maka jawabannya adalah <b>24</b> hari.
+                    </div>
+                </div>
+                <div class="image-wrapper" style="height: 240px;">
+                    <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=600&q=80" alt="Library">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 10 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide11">
+        <h2 class="slide-title">Soal Cerita Kelipatan (KPK) - Tantangan #2</h2>
+        <div class="content-area">
+            <p>Lampu hias merah berkedip setiap <b>10 detik</b>. Lampu kuning berkedip setiap <b>15 detik</b>. Jika kedua lampu berkedip bersamaan pada detik ke-0, pada detik ke berapakah mereka akan menyala bersamaan kembali?</p>
+            <div style="margin-top: 25px; display: grid; grid-template-columns: 220px 140px; gap: 12px; align-items: center;">
+                <span class="q-label">Berapa Nilai KPK?</span>
+                <input type="number" class="input-box" id="kpk-q2-kpk">
+                
+                <span class="q-label">Jawaban Akhir (Detik):</span>
+                <input type="number" class="input-box" id="kpk-q2-ans">
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-check" onclick="evaluateStoryQuestion('kpk', 2, 30, 30)">CEK JAWABAN</button>
+                <button class="btn" style="background: #f59e0b;" onclick="revealExplanation('kpk2')">PEMBAHASAN</button>
+            </div>
+            <div id="explanation-kpk2" class="discussion">
+                <b>Pembahasan:</b> Kelipatan 10 = 10, 20, <b>30</b>. Kelipatan 15 = 15, <b>30</b>. KPK adalah <b>30</b> detik.
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 11 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide12">
+        <h2 class="slide-title">Soal Cerita Kelipatan (KPK) - Tantangan #3</h2>
+        <div class="content-area">
+            <p>Bus rute K berangkat setiap <b>15 menit</b>. Bus rute L berangkat setiap <b>20 menit</b>. Jika kedua bus berangkat bersama pada pukul 07.00 pagi, berapa menit lagikah mereka akan berangkat bersamaan kembali?</p>
+            <div style="margin-top: 25px; display: grid; grid-template-columns: 220px 140px; gap: 12px; align-items: center;">
+                <span class="q-label">Berapa Nilai KPK?</span>
+                <input type="number" class="input-box" id="kpk-q3-kpk">
+                
+                <span class="q-label">Jawaban Akhir (Menit):</span>
+                <input type="number" class="input-box" id="kpk-q3-ans">
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-check" onclick="evaluateStoryQuestion('kpk', 3, 60, 60)">CEK JAWABAN</button>
+                <button class="btn" style="background: #f59e0b;" onclick="revealExplanation('kpk3')">PEMBAHASAN</button>
+            </div>
+            <div id="explanation-kpk3" class="discussion">
+                <b>Pembahasan:</b> Kelipatan 15: 15, 30, 45, <b>60</b>. Kelipatan 20: 20, 40, <b>60</b>. KPK adalah <b>60</b> menit.
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 12 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide13">
+        <h2 class="slide-title">Soal Cerita Faktor (FPB) - Tantangan #1</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="image-wrapper" style="height: 240px;">
+                    <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&w=600&q=80" alt="Apples and Oranges">
+                </div>
+                <div>
+                    <p style="font-size: 19px;">Guru mempunyai <b>24 buah pulpen</b> dan <b>32 buku tulis</b>. Barang tersebut akan dimasukkan ke bingkisan hadiah sama rata. Berapa bingkisan paling banyak yang bisa dibuat?</p>
+                    <div style="margin-top: 20px; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center;">
+                        <span class="q-label">Berapa Nilai FPB?</span>
+                        <input type="number" class="input-box" id="fpb-q1-fpb">
+                        
+                        <span class="q-label">Jawaban Akhir (Paket):</span>
+                        <input type="number" class="input-box" id="fpb-q1-ans">
+                    </div>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn btn-check" onclick="evaluateStoryQuestion('fpb', 1, 8, 8)">CEK JAWABAN</button>
+                        <button class="btn" style="background: #f59e0b;" onclick="revealExplanation('fpb1')">PEMBAHASAN</button>
+                    </div>
+                    <div id="explanation-fpb1" class="discussion">
+                        <b>Pembahasan:</b> FPB dari 24 dan 32.<br>
+                        Faktor 24: 1, 2, 3, 4, 6, <b>8</b>, 12, 24.<br>
+                        Faktor 32: 1, 2, 4, <b>8</b>, 16, 32. FPB adalah <b>8</b>.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 13 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide14">
+        <h2 class="slide-title">Soal Cerita Faktor (FPB) - Tantangan #2</h2>
+        <div class="content-area">
+            <p>Kakak membeli <b>30 donat</b> dan <b>45 keripik cokelat</b>. Camilan diletakkan dalam piring dengan isi persis sama banyak. Berapa jumlah piring saji paling banyak yang diperlukan?</p>
+            <div style="margin-top: 25px; display: grid; grid-template-columns: 220px 140px; gap: 12px; align-items: center;">
+                <span class="q-label">Berapa Nilai FPB?</span>
+                <input type="number" class="input-box" id="fpb-q2-fpb">
+                
+                <span class="q-label">Jawaban Akhir (Piring):</span>
+                <input type="number" class="input-box" id="fpb-q2-ans">
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-check" onclick="evaluateStoryQuestion('fpb', 2, 15, 15)">CEK JAWABAN</button>
+                <button class="btn" style="background: #f59e0b;" onclick="revealExplanation('fpb2')">PEMBAHASAN</button>
+            </div>
+            <div id="explanation-fpb2" class="discussion">
+                <b>Pembahasan:</b> Faktor 30 memiliki pembagi terbesar bersama 45 di angka <b>15</b>. Jadi, maksimal membutuhkan 15 piring.
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 14 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide15">
+        <h2 class="slide-title">Soal Cerita Faktor (FPB) - Tantangan #3</h2>
+        <div class="content-area">
+            <p>Petani memanen <b>40 jeruk</b> dan <b>60 jambu</b>. Ia ingin memaketkan buah tersebut ke keranjang kayu sama banyak. Berapa keranjang paling banyak yang bisa dibuat?</p>
+            <div style="margin-top: 25px; display: grid; grid-template-columns: 220px 140px; gap: 12px; align-items: center;">
+                <span class="q-label">Berapa Nilai FPB?</span>
+                <input type="number" class="input-box" id="fpb-q3-fpb">
+                
+                <span class="q-label">Jawaban Akhir (Keranjang):</span>
+                <input type="number" class="input-box" id="fpb-q3-ans">
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-check" onclick="evaluateStoryQuestion('fpb', 3, 20, 20)">CEK JAWABAN</button>
+                <button class="btn" style="background: #f59e0b;" onclick="revealExplanation('fpb3')">PEMBAHASAN</button>
+            </div>
+            <div id="explanation-fpb3" class="discussion">
+                <b>Pembahasan:</b> Pembagi terbesar (FPB) dari 40 dan 60 adalah <b>20</b>. Jadi membutuhkan 20 keranjang kayu.
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 15 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide16">
+        <h2 class="slide-title">Rangkuman Materi Hari Ini</h2>
+        <div class="content-area">
+            <div class="two-column" style="gap: 30px;">
+                <div class="tile" style="background: #f0fdf4; border: 2px solid #bbf7d0; text-align: left; padding: 20px;">
+                    <h3 style="color: #166534; font-size: 22px;"><i class="fa-solid fa-arrow-trend-up"></i> Kelipatan (KPK)</h3>
+                    <ul style="padding-left: 20px; font-size: 16px; color: #1e293b; margin: 5px 0;">
+                        <li>Diperoleh dari perkalian urut.</li>
+                        <li>Nilai hasil menjadi <b>lebih besar</b>.</li>
+                        <li>Mencari waktu/titik temu <b>bersama lagi</b>.</li>
+                    </ul>
+                </div>
+                <div class="tile" style="background: #eff6ff; border: 2px solid #bfdbfe; text-align: left; padding: 20px;">
+                    <h3 style="color: #1e40af; font-size: 22px;"><i class="fa-solid fa-arrow-trend-down"></i> Faktor (FPB)</h3>
+                    <ul style="padding-left: 20px; font-size: 16px; color: #1e293b; margin: 5px 0;">
+                        <li>Diperoleh dari deret pembagi habis.</li>
+                        <li>Nilai hasil menjadi <b>lebih kecil</b>.</li>
+                        <li>Membagi kelompok <b>sama banyak</b>.</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="text-align: center; font-weight: bold; font-size: 20px; margin-top: 25px; color: #4f46e5;">"Kelipatan melompat ke atas, Faktor membagi ke bawah!"</p>
+        </div>
+        <div class="slide-number-indicator">Slide 16 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide17">
+        <div class="content-area" style="text-align: center;">
+            <h1 style="color: #4f46e5; margin: 0; font-size: 60px;">QUIZ TIME! 🚀</h1>
+            <p style="margin: 20px 0; font-size: 22px; color: #475569;">Uji semua pemahaman hebatmu di arena kuis interaktif!</p>
+            <div style="margin: 20px 0;">
+                <a href="https://wayground.com" target="_blank" class="btn" style="padding: 18px 50px; font-size: 24px; border-radius: 50px;"><i class="fa-solid fa-play"></i> MASUK KE WAYGROUND.COM</a>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 17 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide18">
+        <h2 class="slide-title">Refleksi Belajar Kita</h2>
+        <div class="content-area">
+            <ul class="bullet-list">
+                <li><i class="fa-solid fa-comments" style="color:#4f46e5;"></i> Bagian manakah yang menurutmu paling menantang?</li>
+                <li><i class="fa-solid fa-comments" style="color:#10b981;"></i> Bisakah kamu menjelaskan perbedaan Kelipatan dan Faktor dengan bahasamu sendiri?</li>
+                <li><i class="fa-solid fa-comments" style="color:#f59e0b;"></i> Sebutkan contoh membagi benda sama rata di rumahmu!</li>
+            </ul>
+        </div>
+        <div class="slide-number-indicator">Slide 18 / 19</div>
+    </div>
+
+    <div class="slide-container" id="slide19" style="background: #1e293b; color: white;">
+        <div class="content-area" style="text-align: center;">
+            <h1 style="color: #10b981; font-size: 70px; margin: 0;">Luar Biasa! ✨</h1>
+            <p style="color: #94a3b8; font-size: 24px; margin-top: 10px;">Terima kasih atas semangat belajarmu yang hebat hari ini.</p>
+            <div style="margin-top: 30px; font-size: 60px; color: #eab308;">
+                <i class="fa-solid fa-star"></i>
+            </div>
+        </div>
+        <div class="slide-number-indicator">Slide 19 / 19</div>
+    </div>
+
+    <script>
+        // WEB AUDIO API SOUND SYSTEM (Siswa tidak butuh file mp3 lokal)
+        function playSuccessSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Nada pertama (E5)
+            const osc1 = audioCtx.createOscillator();
+            const gain1 = audioCtx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
+            gain1.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc1.connect(gain1);
+            gain1.connect(audioCtx.destination);
+            osc1.start();
+            osc1.stop(audioCtx.currentTime + 0.15);
+
+            // Nada kedua lebih tinggi (A5)
+            setTimeout(() => {
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(880.00, audioCtx.currentTime); // A5
+                gain2.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.start();
+                osc2.stop(audioCtx.currentTime + 0.3);
+            }, 120);
+        }
+
+        /* SLIDE 5: MATCHING GAME DAFTAR KELIPATAN */
+        let activeLeftNode = null;
+        function matchClick(clickedElement, columnSide, value) {
+            const feedbackText = document.getElementById('match-feedback');
+            if (clickedElement.classList.contains('correct')) return;
+
+            if (columnSide === 'L') {
+                if (activeLeftNode) activeLeftNode.classList.remove('selected');
+                activeLeftNode = clickedElement;
+                clickedElement.classList.add('selected');
+                feedbackText.innerText = "Angka " + value + " dipilih. Temukan barisan kelipatannya!";
+                feedbackText.style.color = "#4f46e5";
+            } else {
+                if (!activeLeftNode) {
+                    feedbackText.innerText = "Pilih angka sebelah kiri terlebih dahulu!";
+                    feedbackText.style.color = "#ef4444";
+                    return;
+                }
+                
+                let baseValue = parseInt(activeLeftNode.innerText);
+                if (value === baseValue) {
+                    clickedElement.classList.add('correct');
+                    activeLeftNode.classList.add('correct');
+                    feedbackText.innerText = "Benar! Pasangan berhasil dicocokkan 🎉";
+                    feedbackText.style.color = "#10b981";
+                    playSuccessSound();
+                    activeLeftNode = null;
+                } else {
+                    feedbackText.innerText = "Salah, barisan tersebut tidak cocok. Coba lagi!";
+                    feedbackText.style.color = "#ef4444";
+                }
+            }
+        }
+
+        /* SLIDE 6: ESTAFET GAME */
+        let gameTurnCounter = 1;
+        function triggerRandomizer() {
+            const calculatedNumber = Math.floor(Math.random() * 10) + 1;
+            document.getElementById('random-num').innerText = calculatedNumber;
+            gameTurnCounter = 1;
+            refreshGameUI();
+        }
+        function advanceGameStep() {
+            if (document.getElementById('random-num').innerText === "?") return;
+            gameTurnCounter++;
+            refreshGameUI();
+        }
+        function refreshGameUI() {
+            const participantRoles = ["Siswa A", "Siswa B", "Tutor"];
+            let currentRole = participantRoles[(gameTurnCounter - 1) % 3];
+            document.getElementById('game-turn').innerHTML = `Giliran: <strong style='color:#1e293b'>${currentRole}</strong>`;
+            document.getElementById('game-step').innerHTML = `Sebutkan Kelipatan Ke: <strong style='color:#1e293b'>${gameTurnCounter}</strong>`;
+        }
+
+        /* SLIDE 8: LABORATORIUM FAKTOR (PEMBETULAN VERIFIKASI) */
+        const listTargetBilanganFaktor = [18, 12, 20, 24, 30, 36, 40, 48, 50, 60];
+        let pointerTargetFaktor = 0;
+
+        function buildFactorInputsHTML(targetNumber) {
+            let foundFactors = [];
+            for (let i = 1; i <= targetNumber; i++) {
+                if (targetNumber % i === 0) foundFactors.push(i);
+            }
+            const countsOfPairs = Math.ceil(foundFactors.length / 2);
+            let templateRowsHTML = "";
+            for (let i = 0; i < countsOfPairs; i++) {
+                templateRowsHTML += `<tr>
+                    <td><input type="number" class="factor-input-node" data-correct-ans="${foundFactors[i]}"></td>
+                    <td><input type="number" class="factor-input-node" data-correct-ans="${foundFactors[foundFactors.length - 1 - i]}"></td>
+                </tr>`;
+            }
+            document.getElementById('factor-table-body').innerHTML = templateRowsHTML;
+        }
+
+        function verifyFactorInputs() {
+            const collectionInputs = document.querySelectorAll('.factor-input-node');
+            let totalInputs = collectionInputs.length;
+            let correctCount = 0;
+
+            collectionInputs.forEach(node => {
+                if (node.value == node.getAttribute('data-correct-ans')) {
+                    node.className = "factor-input-node correct";
+                    correctCount++;
+                } else {
+                    node.className = "factor-input-node wrong";
+                }
+            });
+
+            if(correctCount === totalInputs && totalInputs > 0) {
+                playSuccessSound();
+            }
+        }
+
+        function switchFactorTarget() {
+            pointerTargetFaktor = (pointerTargetFaktor + 1) % listTargetBilanganFaktor.length;
+            let currentNum = listTargetBilanganFaktor[pointerTargetFaktor];
+            document.getElementById('factor-target-display').innerText = currentNum;
+            document.getElementById('factor-table-header').innerText = currentNum;
+            buildFactorInputsHTML(currentNum);
+        }
+        buildFactorInputsHTML(18);
+
+        /* SLIDE 9: KUIS JAWAB CEPAT */
+        const repositoryRapidQuestions = [
+            {divider: 3, target: 15, key: true}, {divider: 4, target: 14, key: false},
+            {divider: 5, target: 25, key: true}, {divider: 2, target: 19, key: false},
+            {divider: 6, target: 24, key: true}, {divider: 7, target: 21, key: true},
+            {divider: 8, target: 40, key: true}, {divider: 9, target: 30, key: false},
+            {divider: 10, target: 70, key: true}, {divider: 12, target: 36, key: true},
+            {divider: 2, target: 31, key: false}, {divider: 3, target: 27, key: true},
+            {divider: 5, target: 55, key: true}, {divider: 4, target: 28, key: true},
+            {divider: 11, target: 33, key: true}, {divider: 6, target: 42, key: true},
+            {divider: 7, target: 50, key: false}, {divider: 8, target: 64, key: true},
+            {divider: 9, target: 81, key: true}, {divider: 15, target: 30, key: true}
+        ];
+        let indexPointerRapid = 0;
+
+        function submitRapidAnswer(studentChoice) {
+            let correctKey = repositoryRapidQuestions[indexPointerRapid].key;
+            if (studentChoice === correctKey) {
+                playSuccessSound();
+                indexPointerRapid++;
+                if (indexPointerRapid < repositoryRapidQuestions.length) {
+                    renderNextRapidQuestion();
+                } else {
+                    document.getElementById('rapid-question-text').innerText = "LUAR BIASA! SEMUA TERJAWAB DENGAN BENAR! 🏆";
+                    document.getElementById('rapid-index-label').innerText = "COMPLETED";
+                }
+            } else {
+                alert("Ayo lebih teliti lagi, jawaban kurang tepat! 🤔");
+            }
+        }
+
+        function renderNextRapidQuestion() {
+            document.getElementById('rapid-index-label').innerText = "PERTANYAAN " + (indexPointerRapid + 1) + " / 20";
+            let activeData = repositoryRapidQuestions[indexPointerRapid];
+            document.getElementById('rapid-question-text').innerText = `Apakah ${activeData.divider} merupakan faktor dari ${activeData.target}?`;
+        }
+
+        /* SLIDE 10 - 15: EVALUASI SOAL CERITA */
+        function evaluateStoryQuestion(typePrefix, questionID, correctValue1, correctValue2) {
+            let valInputNode = document.getElementById(`${typePrefix}-q${questionID}-${typePrefix}`);
+            let ansInputNode = document.getElementById(`${typePrefix}-q${questionID}-ans`);
+            
+            if(valInputNode.value == correctValue1) valInputNode.className = "input-box correct"; 
+            else valInputNode.className = "input-box wrong";
+            
+            if(ansInputNode.value == correctValue2) ansInputNode.className = "input-box correct"; 
+            else ansInputNode.className = "input-box wrong";
+        }
+
+        function revealExplanation(explanationContainerID) {
+            const targetBlock = document.getElementById('explanation-' + explanationContainerID);
+            targetBlock.style.display = (targetBlock.style.display === 'block') ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>
