@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penjelajahan Kelipatan & Faktor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --abyss:#021325;--deep:#052e4d;--ocean:#0a4d6e;--teal:#0d7a8c;--aqua:#36c5d4;
+  --coral:#ff7a59;--gold:#ffd166;--pearl:#f5f0e1;--foam:#e8f4f8;--ink:#0a1929;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--abyss);color:var(--foam);min-height:100vh;overflow-x:hidden;line-height:1.6}
+
+.ocean-bg{position:fixed;inset:0;z-index:-3;
+  background:
+    radial-gradient(ellipse at 20% 0%,rgba(54,197,212,0.15) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 100%,rgba(255,122,89,0.1) 0%,transparent 50%),
+    linear-gradient(180deg,#052e4d 0%,#021325 100%);}
+.bubbles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.bubble{position:absolute;bottom:-100px;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.5),rgba(54,197,212,0.1));border:1px solid rgba(255,255,255,0.1);border-radius:50%;animation:float linear infinite}
+@keyframes float{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:0.7}90%{opacity:0.4}100%{transform:translateY(-110vh) translateX(80px);opacity:0}}
+
+.presentation{position:relative;min-height:100vh;padding:2rem 1.5rem 7rem;max-width:1280px;margin:0 auto}
+.slide{display:none;animation:slideIn 0.6s cubic-bezier(0.22,1,0.36,1)}
+.slide.active{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateY(40px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.nav-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(2,19,37,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(54,197,212,0.25);padding:1rem 2rem;z-index:100;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.nav-btn{background:linear-gradient(135deg,var(--coral),var(--gold));color:var(--ink);border:none;padding:0.75rem 1.5rem;border-radius:50px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:0.95rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:0.5rem;white-space:nowrap}
+.nav-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,122,89,0.4)}
+.nav-btn:disabled{opacity:0.35;cursor:not-allowed}
+.nav-btn.secondary{background:rgba(54,197,212,0.15);color:var(--aqua);border:1px solid rgba(54,197,212,0.5)}
+.nav-btn.secondary:hover:not(:disabled){background:var(--aqua);color:var(--ink)}
+.progress{display:flex;gap:0.4rem;flex:1;justify-content:center;flex-wrap:wrap}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(54,197,212,0.3);cursor:pointer;transition:all 0.3s;border:none;padding:0}
+.dot.active{background:var(--gold);width:30px;border-radius:5px}
+
+.tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,209,102,0.12);color:var(--gold);padding:0.4rem 1rem;border-radius:50px;font-size:0.85rem;font-weight:600;letter-spacing:0.06em;border:1px solid rgba(255,209,102,0.3);text-transform:uppercase}
+.slide-header{text-align:center;margin-bottom:2.5rem}
+.slide-header h2{font-family:'Fredoka',sans-serif;font-size:clamp(2rem,4.5vw,3rem);font-weight:700;color:var(--foam);margin:0.75rem 0 0.5rem;line-height:1.1}
+.slide-header p{color:var(--aqua);font-size:1.05rem;opacity:0.85}
+
+.cover{min-height:75vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
+.cover-decor{position:absolute;font-size:6rem;opacity:0.08;pointer-events:none;color:var(--aqua)}
+.cover-decor.tl{top:8%;left:5%}.cover-decor.tr{top:10%;right:8%;font-size:5rem;color:var(--coral)}
+.cover-decor.bl{bottom:8%;left:10%;font-size:4rem;color:var(--gold)}.cover-decor.br{bottom:12%;right:5%;font-size:5rem}
+.cover-title{font-family:'Fredoka',sans-serif;font-size:clamp(2.5rem,7vw,5.5rem);font-weight:700;line-height:1;margin:1rem 0}
+.cover-title .l1{display:block;background:linear-gradient(135deg,var(--gold),var(--coral));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-title .l2{display:block;background:linear-gradient(135deg,var(--aqua),var(--pearl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:0.85em}
+.cover .subtitle{font-size:1.15rem;color:var(--aqua);margin-bottom:2rem;max-width:600px}
+.name-card{background:rgba(10,77,110,0.45);backdrop-filter:blur(20px);border:1px solid rgba(54,197,212,0.4);border-radius:24px;padding:2rem;width:100%;max-width:480px;position:relative}
+.name-card::before{content:'';position:absolute;top:-2px;left:20%;right:20%;height:4px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border-radius:4px}
+.name-card label{display:flex;align-items:center;gap:0.5rem;font-size:0.95rem;color:var(--aqua);margin-bottom:0.75rem;font-weight:500}
+.name-card input{width:100%;padding:1rem 1.25rem;border-radius:14px;border:2px solid rgba(54,197,212,0.3);background:rgba(2,19,37,0.6);color:var(--foam);font-size:1.1rem;font-family:inherit;outline:none;transition:all 0.3s}
+.name-card input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(255,209,102,0.15)}
+.start-btn{background:linear-gradient(135deg,var(--coral),var(--gold));color:var(--ink);border:none;padding:1rem 2rem;border-radius:50px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.1rem;cursor:pointer;transition:all 0.3s;margin-top:1.5rem;width:100%;display:flex;align-items:center;justify-content:center;gap:0.6rem}
+.start-btn:disabled{opacity:0.4;cursor:not-allowed}
+.start-btn:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(255,122,89,0.5)}
+.welcome-msg{margin-top:1rem;color:var(--gold);font-weight:600;display:none}
+.welcome-msg.show{display:block;animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+
+.objectives-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
+.objective-card{background:rgba(10,77,110,0.4);backdrop-filter:blur(15px);border:1px solid rgba(54,197,212,0.25);border-radius:20px;padding:1.75rem;position:relative;overflow:hidden;transition:all 0.4s cubic-bezier(0.22,1,0.36,1)}
+.objective-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,209,102,0.08));opacity:0;transition:opacity 0.3s}
+.objective-card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 20px 40px rgba(0,30,60,0.3)}
+.objective-card:hover::before{opacity:1}
+.objective-card .num{font-family:'Fredoka',sans-serif;font-size:3rem;font-weight:700;background:linear-gradient(135deg,var(--coral),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:0.75rem;display:block}
+.objective-card h3{font-family:'Fredoka',sans-serif;font-size:1.15rem;color:var(--gold);margin-bottom:0.5rem}
+.objective-card p{font-size:0.95rem;color:var(--foam);opacity:0.85;line-height:1.5}
+
+.material-section{margin-bottom:2rem}
+.material-section h3{font-family:'Fredoka',sans-serif;font-size:1.8rem;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap}
+.material-section h3 .icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--coral),var(--gold));display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:1.2rem;flex-shrink:0}
+.material-content{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:1.5rem}
+.info-block{background:rgba(10,77,110,0.3);border-radius:16px;padding:1.25rem;border-left:4px solid var(--aqua)}
+.info-block h4{color:var(--aqua);font-family:'Fredoka',sans-serif;margin-bottom:0.5rem;font-size:1.05rem;display:flex;align-items:center;gap:0.5rem}
+.info-block p,.info-block li{color:var(--foam);opacity:0.9;line-height:1.6;font-size:0.95rem}
+.info-block ul{padding-left:1.2rem;margin-top:0.4rem}
+.info-block li{margin-bottom:0.3rem}
+
+.factor-table-section{background:rgba(10,77,110,0.4);border:1px solid rgba(54,197,212,0.25);border-radius:20px;padding:1.5rem;margin-top:1.5rem}
+.factor-table-section h4{font-family:'Fredoka',sans-serif;color:var(--gold);margin-bottom:0.5rem;font-size:1.2rem}
+.number-display{display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,rgba(255,122,89,0.2),rgba(255,209,102,0.2));border:1px solid var(--coral);padding:0.5rem 1.5rem;border-radius:50px;font-family:'Fredoka',sans-serif;font-size:1.5rem;color:var(--gold);margin:0.5rem 0 1rem}
+.factor-table{width:100%;border-collapse:separate;border-spacing:8px;margin:1rem 0;max-width:500px}
+.factor-table td{text-align:center;padding:0.25rem}
+.factor-table input{width:70px;height:55px;text-align:center;border:2px solid rgba(54,197,212,0.3);background:rgba(2,19,37,0.6);color:var(--foam);border-radius:12px;font-size:1.2rem;font-family:'Fredoka',sans-serif;outline:none;transition:all 0.3s}
+.factor-table input:focus{border-color:var(--gold);background:rgba(255,209,102,0.08)}
+.factor-table input.correct{border-color:#4ade80;background:rgba(74,222,128,0.15);color:#4ade80}
+.factor-table input.wrong{border-color:#ef4444;background:rgba(239,68,68,0.15);color:#ef4444;animation:shake 0.4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.factor-table .op{font-family:'Fredoka',sans-serif;font-size:1.3rem;color:var(--aqua);width:30px}
+.factor-table .equal{font-family:'Fredoka',sans-serif;font-size:1.3rem;color:var(--aqua);width:30px}
+.factor-table .result{font-family:'Fredoka',sans-serif;font-size:1.3rem;color:var(--coral);font-weight:600}
+
+.btn{background:rgba(54,197,212,0.12);color:var(--aqua);border:1px solid rgba(54,197,212,0.5);padding:0.6rem 1.2rem;border-radius:50px;font-family:'Fredoka',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn:hover{background:var(--aqua);color:var(--ink);border-color:var(--aqua)}
+.btn.primary{background:linear-gradient(135deg,var(--coral),var(--gold));color:var(--ink);border:none}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,122,89,0.4)}
+.btn.success{background:linear-gradient(135deg,#4ade80,#22c55e);color:var(--ink);border:none}
+.controls-row{display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:1rem;align-items:center}
+.feedback{margin-top:1rem;padding:0.75rem 1rem;border-radius:10px;font-weight:500;display:none}
+.feedback.show{display:block;animation:slideIn 0.3s}
+.feedback.success{background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid #4ade80}
+.feedback.error{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid #ef4444}
+.feedback.info{background:rgba(54,197,212,0.15);color:var(--aqua);border:1px solid var(--aqua)}
+
+.game-container{background:rgba(10,77,110,0.4);border:1px solid rgba(54,197,212,0.25);border-radius:24px;padding:2rem;margin-bottom:1.5rem}
+.game-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
+.game-title{font-family:'Fredoka',sans-serif;font-size:1.5rem;color:var(--gold);display:flex;align-items:center;gap:0.75rem}
+.game-title .icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--coral),var(--gold));display:flex;align-items:center;justify-content:center;color:var(--ink);flex-shrink:0}
+
+.random-number{font-family:'Fredoka',sans-serif;font-size:4rem;font-weight:700;color:var(--gold);margin:1rem 0;min-height:80px;display:flex;align-items:center;justify-content:center}
+.turn-indicator{font-family:'Fredoka',sans-serif;font-size:1.2rem;padding:0.75rem 2rem;border-radius:50px;background:rgba(54,197,212,0.15);border:1px solid var(--aqua);color:var(--aqua);display:inline-flex;align-items:center;gap:0.5rem;margin:0.5rem 0 1rem;transition:all 0.3s}
+.turn-indicator.student{background:rgba(255,122,89,0.2);border-color:var(--coral);color:var(--coral)}
+.turn-indicator.tutor{background:rgba(54,197,212,0.2);border-color:var(--aqua);color:var(--aqua)}
+.multiples-sequence{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin:1.5rem 0;min-height:60px;padding:1rem;background:rgba(2,19,37,0.4);border-radius:14px}
+.multiple-chip{background:linear-gradient(135deg,rgba(255,209,102,0.2),rgba(255,122,89,0.2));border:1px solid var(--gold);color:var(--gold);padding:0.5rem 1rem;border-radius:50px;font-family:'Fredoka',sans-serif;font-size:1.1rem;animation:chipIn 0.4s cubic-bezier(0.22,1,0.36,1)}
+@keyframes chipIn{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+.multiple-chip.student{border-color:var(--coral);color:var(--coral);background:rgba(255,122,89,0.15)}
+.multiple-chip.tutor{border-color:var(--aqua);color:var(--aqua);background:rgba(54,197,212,0.15)}
+.multiple-input{width:120px;padding:0.75rem;font-size:1.2rem;text-align:center;border-radius:12px;border:2px solid rgba(54,197,212,0.4);background:rgba(2,19,37,0.6);color:var(--foam);font-family:'Fredoka',sans-serif;outline:none}
+.multiple-input:focus{border-color:var(--gold)}
+
+.memory-stats{display:flex;justify-content:center;gap:2rem;margin-bottom:1rem;flex-wrap:wrap}
+.stat-box{text-align:center}
+.stat-box .label{font-size:0.85rem;color:var(--aqua);text-transform:uppercase;letter-spacing:0.05em}
+.stat-box .value{font-family:'Fredoka',sans-serif;font-size:1.8rem;color:var(--gold);font-weight:600}
+.memory-grid{display:flex;flex-wrap:wrap;gap:0.6rem;justify-content:center;margin:1.5rem 0;min-height:200px}
+.memory-card{width:80px;height:110px;perspective:1000px;cursor:pointer;flex-shrink:0}
+.card-inner{position:relative;width:100%;height:100%;transition:transform 0.6s;transform-style:preserve-3d}
+.memory-card.flipped .card-inner,.memory-card.matched .card-inner,.memory-card.preview .card-inner{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:1.6rem;font-weight:700}
+.card-front{background:linear-gradient(135deg,var(--teal),var(--ocean));border:2px solid var(--aqua);color:var(--aqua);font-size:1.5rem}
+.card-back{background:linear-gradient(135deg,rgba(255,209,102,0.95),rgba(255,122,89,0.95));color:var(--ink);transform:rotateY(180deg);border:2px solid var(--gold)}
+.memory-card.matched .card-back{background:linear-gradient(135deg,rgba(74,222,128,0.95),rgba(34,197,94,0.95));border-color:#4ade80}
+
+.keywords-box{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+@media (max-width:600px){.keywords-box{grid-template-columns:1fr}}
+.keyword-card{background:rgba(10,77,110,0.4);border-radius:16px;padding:1.25rem;border:1px solid rgba(54,197,212,0.25)}
+.keyword-card.kelipatan{border-top:4px solid var(--coral)}
+.keyword-card.faktor{border-top:4px solid var(--aqua)}
+.keyword-card h4{font-family:'Fredoka',sans-serif;font-size:1.1rem;margin-bottom:0.5rem}
+.keyword-card.kelipatan h4{color:var(--coral)}
+.keyword-card.faktor h4{color:var(--aqua)}
+.keyword-card p{font-size:0.9rem;color:var(--foam);opacity:0.85;line-height:1.5}
+.keyword-card .keyword-list{margin-top:0.5rem;font-size:0.85rem;color:var(--gold)}
+
+.statement-list{display:flex;flex-direction:column;gap:1rem}
+.statement-item{background:rgba(10,77,110,0.3);border:1px solid rgba(54,197,212,0.2);border-radius:16px;padding:1.25rem;transition:all 0.3s}
+.statement-item.answered{border-color:var(--gold)}
+.statement-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:linear-gradient(135deg,var(--coral),var(--gold));color:var(--ink);border-radius:50%;font-family:'Fredoka',sans-serif;font-weight:600;margin-right:0.5rem;font-size:0.9rem;vertical-align:middle}
+.statement-text{display:inline;color:var(--foam);line-height:1.6}
+.statement-actions{display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap;align-items:center}
+.choice-btn{background:rgba(54,197,212,0.1);color:var(--aqua);border:1.5px solid rgba(54,197,212,0.5);padding:0.5rem 1.25rem;border-radius:50px;font-family:'Fredoka',sans-serif;cursor:pointer;transition:all 0.3s;font-size:0.9rem}
+.choice-btn:hover{background:rgba(54,197,212,0.25)}
+.choice-btn.selected{background:linear-gradient(135deg,var(--coral),var(--gold));color:var(--ink);border-color:transparent}
+.choice-btn.correct{background:linear-gradient(135deg,#4ade80,#22c55e);color:var(--ink);border-color:transparent}
+.choice-btn.wrong{background:linear-gradient(135deg,#ef4444,#dc2626);color:white;border-color:transparent}
+.statement-result{margin-top:0.75rem;padding:0.75rem 1rem;border-radius:10px;font-size:0.9rem;display:none;line-height:1.6}
+.statement-result.show{display:block;animation:slideIn 0.3s}
+.statement-result.correct{background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid #4ade80}
+.statement-result.wrong{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid #ef4444}
+.statement-result.info{background:rgba(54,197,212,0.15);color:var(--aqua);border:1px solid var(--aqua)}
+
+.story-container{display:flex;flex-direction:column;gap:1.5rem}
+.story-paragraph{background:rgba(10,77,110,0.35);backdrop-filter:blur(10px);border:1px solid rgba(54,197,212,0.25);border-left:4px solid var(--coral);border-radius:16px;padding:1.5rem}
+.story-paragraph h4{font-family:'Fredoka',sans-serif;color:var(--gold);margin-bottom:0.75rem;font-size:1.1rem;display:flex;align-items:center;gap:0.5rem}
+.story-text{color:var(--foam);line-height:1.9;font-size:1rem;margin-bottom:1rem}
+.story-input{display:inline-block;width:75px;padding:0.25rem 0.5rem;margin:0 0.25rem;text-align:center;border-radius:8px;border:2px solid rgba(255,209,102,0.4);background:rgba(2,19,37,0.7);color:var(--gold);font-family:'Fredoka',sans-serif;font-size:1rem;outline:none;transition:all 0.3s;vertical-align:middle}
+.story-input:focus{border-color:var(--gold)}
+.story-input.correct{border-color:#4ade80;color:#4ade80;background:rgba(74,222,128,0.15)}
+.story-input.wrong{border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,0.15)}
+.story-discussion{background:rgba(54,197,212,0.1);border:1px solid var(--aqua);border-radius:12px;padding:1rem;margin-top:1rem;display:none;font-size:0.95rem;line-height:1.7}
+.story-discussion.show{display:block;animation:slideIn 0.4s}
+.story-discussion strong{color:var(--gold)}
+.story-discussion .ans{color:#4ade80;font-weight:600}
+.story-controls{display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem}
+
+.problem-list{display:flex;flex-direction:column;gap:1.25rem}
+.problem-item{background:rgba(10,77,110,0.3);border:1px solid rgba(54,197,212,0.2);border-radius:16px;padding:1.5rem;transition:all 0.3s}
+.problem-item.answered{border-color:var(--gold)}
+.problem-header{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem}
+.problem-num{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:linear-gradient(135deg,var(--coral),var(--gold));color:var(--ink);border-radius:12px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:0.95rem}
+.problem-text{color:var(--foam);line-height:1.6;flex:1;font-size:0.97rem}
+.options-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.6rem;margin:1rem 0}
+.option-item{display:flex;align-items:center;gap:0.5rem;background:rgba(2,19,37,0.4);border:1.5px solid rgba(54,197,212,0.3);border-radius:10px;padding:0.65rem 1rem;cursor:pointer;transition:all 0.3s;font-size:0.95rem;user-select:none}
+.option-item:hover{background:rgba(54,197,212,0.1);border-color:var(--aqua)}
+.option-item.selected{background:rgba(255,209,102,0.15);border-color:var(--gold);color:var(--gold)}
+.option-item.correct{background:rgba(74,222,128,0.2);border-color:#4ade80;color:#4ade80}
+.option-item.wrong{background:rgba(239,68,68,0.2);border-color:#ef4444;color:#ef4444}
+.option-checkbox{width:20px;height:20px;border:2px solid currentColor;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s;font-size:0.8rem;font-weight:700}
+.option-item.selected .option-checkbox::after{content:'\2713'}
+.problem-discussion{background:rgba(54,197,212,0.1);border:1px solid var(--aqua);border-radius:12px;padding:1rem;margin-top:1rem;display:none;font-size:0.92rem;line-height:1.7}
+.problem-discussion.show{display:block;animation:slideIn 0.4s}
+.problem-discussion strong{color:var(--gold)}
+.problem-discussion .correct-answer{background:rgba(74,222,128,0.15);color:#4ade80;padding:0.25rem 0.75rem;border-radius:8px;display:inline-block;margin-top:0.5rem;font-weight:600}
+
+.conclusion-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+@media (max-width:768px){.conclusion-grid{grid-template-columns:1fr}}
+.summary-card{background:rgba(10,77,110,0.4);border-radius:20px;padding:1.75rem;border-top:4px solid var(--coral)}
+.summary-card.faktor{border-top-color:var(--aqua)}
+.summary-card h3{font-family:'Fredoka',sans-serif;color:var(--gold);margin-bottom:1rem;font-size:1.3rem}
+.summary-card.faktor h3{color:var(--aqua)}
+.summary-card ul{list-style:none;padding:0}
+.summary-card li{padding:0.5rem 0 0.5rem 1.5rem;position:relative;color:var(--foam);opacity:0.9;font-size:0.95rem}
+.summary-card li::before{content:'\2605';position:absolute;left:0;color:var(--gold)}
+.summary-card.faktor li::before{color:var(--aqua)}
+
+.reflection-box{background:linear-gradient(135deg,rgba(255,122,89,0.15),rgba(255,209,102,0.15));border:1px solid var(--gold);border-radius:20px;padding:1.75rem;margin-bottom:1.5rem}
+.reflection-box h3{font-family:'Fredoka',sans-serif;color:var(--gold);margin-bottom:1rem;font-size:1.3rem}
+.reflection-question{background:rgba(2,19,37,0.4);border-radius:12px;padding:1rem;margin-bottom:0.75rem}
+.reflection-question p{color:var(--aqua);margin-bottom:0.5rem;font-size:0.95rem}
+.reflection-question input,.reflection-question textarea{width:100%;padding:0.75rem 1rem;border-radius:10px;border:2px solid rgba(54,197,212,0.3);background:rgba(2,19,37,0.6);color:var(--foam);font-family:inherit;font-size:0.95rem;outline:none;resize:vertical}
+.reflection-question input:focus,.reflection-question textarea:focus{border-color:var(--gold)}
+
+.thank-you{text-align:center;padding:3rem 1rem;background:rgba(10,77,110,0.4);border-radius:24px;border:1px solid rgba(54,197,212,0.3);position:relative;overflow:hidden}
+.thank-you::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,209,102,0.08) 0%,transparent 50%);animation:rotate 20s linear infinite}
+@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.thank-you>*{position:relative;z-index:1}
+.thank-you h2{font-family:'Fredoka',sans-serif;font-size:clamp(2rem,5vw,3.5rem);background:linear-gradient(135deg,var(--gold),var(--coral),var(--aqua));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem}
+.thank-you p{color:var(--foam);opacity:0.85;font-size:1.1rem;max-width:500px;margin:0 auto}
+.thank-you .student-name{color:var(--gold);font-weight:700;font-family:'Fredoka',sans-serif}
+.heart{font-size:3rem;color:var(--coral);margin:1rem 0;animation:heartbeat 1.5s ease infinite;display:inline-block}
+@keyframes heartbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
+.toast{position:fixed;top:20px;right:20px;background:rgba(2,19,37,0.95);backdrop-filter:blur(15px);border:1px solid var(--gold);border-radius:12px;padding:1rem 1.5rem;color:var(--foam);z-index:200;display:flex;align-items:center;gap:0.75rem;transform:translateX(120%);transition:transform 0.4s cubic-bezier(0.22,1,0.36,1);max-width:350px;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+.toast.show{transform:translateX(0)}
+.toast.success{border-color:#4ade80}
+.toast.error{border-color:#ef4444}
+.toast i{font-size:1.3rem}
+.toast.success i{color:#4ade80}
+.toast.error i{color:#ef4444}
+.toast.info i{color:var(--aqua)}
+
+@media (max-width:768px){
+  .presentation{padding:1.5rem 1rem 6rem}
+  .nav-bar{padding:0.75rem 1rem}
+  .nav-btn{padding:0.6rem 1rem;font-size:0.85rem}
+  .progress{gap:0.25rem}
+  .dot{width:8px;height:8px}
+  .dot.active{width:22px}
+  .factor-table input{width:55px;height:48px;font-size:1rem}
+  .memory-card{width:65px;height:90px}
+  .card-face{font-size:1.3rem}
+  .cover-decor{display:none}
+}
+</style>
+</head>
+<body>
+<div class="ocean-bg"></div>
+<div class="bubbles" id="bubbles"></div>
+
+<main class="presentation">
+  <section class="slide active" data-slide="1">
+    <div class="cover">
+      <i class="fas fa-fish cover-decor tl"></i>
+      <i class="fas fa-anchor cover-decor tr"></i>
+      <i class="fas fa-star cover-decor bl"></i>
+      <i class="fas fa-shell cover-decor br"></i>
+      <span class="tag"><i class="fas fa-water"></i> Petualangan Bawah Laut</span>
+      <h1 class="cover-title">
+        <span class="l1">Penjelajahan</span>
+        <span class="l2">Kelipatan & Faktor</span>
+      </h1>
+      <p class="subtitle">Mari menyelam bersama Ariel untuk menemukan rahasia bilangan di dasar laut!</p>
+      <div class="name-card">
+        <label for="studentName"><i class="fas fa-user-circle"></i> Siapa nama penjelajah kita hari ini?</label>
+        <input type="text" id="studentName" placeholder="Tulis namamu di sini..." maxlength="30">
+        <button class="start-btn" id="startBtn" disabled>
+          <i class="fas fa-rocket"></i> Mulai Petualangan
+        </button>
+        <div class="welcome-msg" id="welcomeMsg"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="2">
+    <div class="slide-header">
+      <span class="tag"><i class="fas fa-bullseye"></i> Tujuan Pembelajaran</span>
+      <h2>Apa yang Akan Kita Capai?</h2>
+      <p>Setelah petualangan ini, kamu akan menjadi ahli kelipatan dan faktor!</p>
+    </div>
+    <div class="objectives-grid">
+      <div class="objective-card"><span class="num">01</span><h3>Memahami Konsep</h3><p>Menjelaskan definisi kelipatan dan faktor suatu bilangan dengan benar.</p></div>
+      <div class="objective-card"><span class="num">02</span><h3>Mencari Kelipatan</h3><p>Menemukan kelipatan suatu bilangan menggunakan perkalian dengan bilangan asli.</p></div>
+      <div class="objective-card"><span class="num">03</span><h3>Mencari Faktor</h3><p>Menemukan faktor suatu bilangan menggunakan tabel pasangan perkalian.</p></div>
+      <div class="objective-card"><span class="num">04</span><h3>Menerapkan dalam Hidup</h3><p>Menggunakan kelipatan dan faktor untuk menyelesaikan masalah sehari-hari.</p></div>
+      <div class="objective-card"><span class="num">05</span><h3>Berpikir Kritis</h3><p>Membedakan kapan menggunakan kelipatan dan kapan menggunakan faktor.</p></div>
+      <div class="objective-card"><span class="num">06</span><h3>Berkolaborasi</h3><p>Bermain dan belajar bersama teman melalui permainan interaktif.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="3">
+    <div class="slide-header">
+      <span class="tag"><i class="fas fa-book-open"></i> Materi</span>
+      <h2>Memahami Kelipatan & Faktor</h2>
+      <p>Dua konsep penting yang ada di sekeliling kita setiap hari</p>
+    </div>
+    <div class="material-section">
+      <h3><span class="icon"><i class="fas fa-water"></i></span> Kelipatan</h3>
+      <div class="material-content">
+        <div class="info-block"><h4><i class="fas fa-lightbulb"></i> Definisi</h4><p><strong>Kelipatan</strong> suatu bilangan adalah hasil perkalian bilangan tersebut dengan bilangan asli (1, 2, 3, 4, ...). Contoh: kelipatan 3 adalah 3, 6, 9, 12, 15, dan seterusnya.</p></div>
+        <div class="info-block"><h4><i class="fas fa-cogs"></i> Cara Mencari</h4><p>Kalikan bilangan dengan 1, 2, 3, 4, dan seterusnya:</p><ul><li>Kelipatan 4: 4&times;1=4, 4&times;2=8, 4&times;3=12, ...</li><li>Untuk KPK: cari kelipatan persekutuan terkecil</li></ul></div>
+        <div class="info-block"><h4><i class="fas fa-globe"></i> Kehidupan Sehari-hari</h4><ul><li>Menentukan kapan dua kejadian terjadi bersamaan</li><li>Menghitung uang tabungan berkala</li><li>Menentukan jarak antar tiang/pohon</li></ul></div>
+      </div>
+    </div>
+    <div class="material-section">
+      <h3><span class="icon"><i class="fas fa-puzzle-piece"></i></span> Faktor</h3>
+      <div class="material-content">
+        <div class="info-block"><h4><i class="fas fa-lightbulb"></i> Definisi</h4><p><strong>Faktor</strong> suatu bilangan adalah bilangan yang dapat membagi habis bilangan tersebut. Contoh: faktor 12 adalah 1, 2, 3, 4, 6, dan 12.</p></div>
+        <div class="info-block"><h4><i class="fas fa-cogs"></i> Cara Mencari</h4><p>Cari pasangan bilangan yang hasil kalinya sama dengan bilangan tersebut:</p><ul><li>Mulai dari 1 &times; bilangan</li><li>Lanjut 2 &times; ?, 3 &times; ?, dan seterusnya</li><li>Berhenti ketika pasangan sudah berulang</li></ul></div>
+        <div class="info-block"><h4><i class="fas fa-globe"></i> Kehidupan Sehari-hari</h4><ul><li>Membagi barang secara merata</li><li>Mengelompokkan orang atau benda</li><li>Membuat tata letak persegi panjang</li></ul></div>
+      </div>
+    </div>
+    <div class="factor-table-section">
+      <h4><i class="fas fa-table"></i> Tabel Pasangan Perkalian &mdash; Cari Faktor!</h4>
+      <p>Lengkapi kolom kanan untuk menemukan faktor-faktor dari bilangan berikut:</p>
+      <div class="number-display"><i class="fas fa-hashtag"></i> Bilangan: <span id="factorNumberDisplay">12</span></div>
+      <table class="factor-table"><tbody id="factorTableBody"></tbody></table>
+      <div class="controls-row">
+        <button class="btn primary" id="checkFactorBtn"><i class="fas fa-check"></i> Cek Jawaban</button>
+        <button class="btn" id="changeNumberBtn"><i class="fas fa-sync"></i> Ganti Bilangan</button>
+        <span style="color:var(--aqua);font-size:0.9rem;">Bilangan ke-<span id="numIndex">1</span> dari 20</span>
+      </div>
+      <div class="feedback" id="factorFeedback"></div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="4">
+    <div class="slide-header">
+      <span class="tag"><i class="fas fa-gamepad"></i> Game Time</span>
+      <h2>Saatnya Bermain!</h2>
+      <p>Ayo uji pemahamanmu lewat dua permainan seru</p>
+    </div>
+    <div class="game-container">
+      <div class="game-header">
+        <div class="game-title"><span class="icon"><i class="fas fa-dice"></i></span><span>Game 1: Tentukan Kelipatannya</span></div>
+      </div>
+      <p style="text-align:center;color:var(--aqua);margin-bottom:1rem">Acak sebuah bilangan (1-10), undi siapa yang mulai lebih dulu, lalu sebutkan kelipatannya secara bergantian dengan tutor!</p>
+      <div style="text-align:center">
+        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem">
+          <button class="btn primary" id="drawNumberBtn"><i class="fas fa-dice"></i> Acak Angka</button>
+          <button class="btn" id="drawOrderBtn"><i class="fas fa-random"></i> Undi Urutan</button>
+          <button class="btn" id="resetGame1Btn"><i class="fas fa-redo"></i> Reset</button>
+        </div>
+        <div class="random-number" id="game1Number">?</div>
+        <div id="game1Order" style="color:var(--aqua);font-family:'Fredoka',sans-serif;min-height:30px;margin-bottom:1rem"></div>
+        <div id="game1TurnArea" style="display:none">
+          <div class="turn-indicator" id="game1Turn"></div>
+          <p id="multipleLabel" style="color:var(--foam);margin-bottom:0.5rem"></p>
+          <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;align-items:center">
+            <input type="number" class="multiple-input" id="multipleInput" placeholder="?">
+            <button class="btn primary" id="checkMultipleBtn"><i class="fas fa-paper-plane"></i> Jawab</button>
+          </div>
+        </div>
+        <div class="multiples-sequence" id="game1Sequence"></div>
+      </div>
+    </div>
+    <div class="game-container">
+      <div class="game-header">
+        <div class="game-title"><span class="icon"><i class="fas fa-clone"></i></span><span>Game 2: Memory Faktor</span></div>
+        <button class="btn" id="changeMemoryNumberBtn"><i class="fas fa-sync"></i> Ganti Bilangan</button>
+      </div>
+      <p style="text-align:center;color:var(--aqua);margin-bottom:1rem">Hafalkan semua kartu selama 10 detik. Lalu buka pasangan kartu yang jika dikalikan menghasilkan bilangan target!</p>
+      <div style="text-align:center">
+        <div class="number-display"><i class="fas fa-hashtag"></i> Target: <span id="memoryNumberDisplay">12</span></div>
+        <div class="memory-stats">
+          <div class="stat-box"><div class="label">Pasangan Ditemukan</div><div class="value" id="memoryMatches">0 / 0</div></div>
+          <div class="stat-box"><div class="label">Jumlah Percobaan</div><div class="value" id="memoryAttempts">0</div></div>
+        </div>
+        <div style="color:var(--gold);font-family:'Fredoka',sans-serif;min-height:30px;margin-bottom:1rem" id="memoryStatus">Tekan tombol untuk memulai</div>
+        <button class="btn primary" id="startMemoryBtn"><i class="fas fa-play"></i> Mulai Game</button>
+        <div class="memory-grid" id="memoryGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="5">
+    <div class="slide-header">
+      <span class="tag"><i class="fas fa-globe"></i> Kehidupan Sehari-hari</span>
+      <h2>Kelipatan atau Faktor?</h2>
+      <p>Belajar membedakan kapan menggunakan kelipatan dan kapan menggunakan faktor</p>
+    </div>
+    <div class="keywords-box">
+      <div class="keyword-card kelipatan">
+        <h4><i class="fas fa-water"></i> Kata Kunci Kelipatan</h4>
+        <p>Gunakan kelipatan ketika soal meminta:</p>
+        <div class="keyword-list">&bull; "setiap ... sekali" &bull; "bersamaan" &bull; "kapan bertemu lagi"<br>&bull; "total setelah beberapa kali" &bull; "jarak berulang"</div>
+      </div>
+      <div class="keyword-card faktor">
+        <h4><i class="fas fa-puzzle-piece"></i> Kata Kunci Faktor</h4>
+        <p>Gunakan faktor ketika soal meminta:</p>
+        <div class="keyword-list">&bull; "dibagi rata" &bull; "dikelompokkan" &bull; "jumlah per kelompok"<br>&bull; "berapa bagian" &bull; "pemecahan/pembagian"</div>
+      </div>
+    </div>
+    <div class="statement-list" id="statementList"></div>
+  </section>
+
+  <section class="slide" data-slide="6">
+    <div class="slide-header">
+      <span class="tag"><i class="fas fa-book"></i> Story Time</span>
+      <h2>Petualangan Ariel Sang Putri Duyung</h2>
+      <p>Lengkapi cerita ini dengan jawaban kelipatan dan faktor yang tepat!</p>
+    </div>
+    <div class="story-container" id="storyContainer"></div>
+  </section>
+
+  <section class="slide" data-slide="7">
+    <div class="slide-header">
+      <span class="tag"><i class="fas fa-brain"></i> Problem Solving</span>
+      <h2>Soal Cerita Kelipatan & Faktor</h2>
+      <p>20 soal pilihan ganda kompleks &mdash; pilih semua jawaban yang benar!</p>
+    </div>
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <button class="btn primary" id="checkAllBtn"><i class="fas fa-check-double"></i> Cek Semua Jawaban</button>
+      <button class="btn" id="showAllDiscussionBtn"><i class="fas fa-eye"></i> Tampilkan Semua Pembahasan</button>
+    </div>
+    <div class="problem-list" id="problemList"></div>
+  </section>
+
+  <section class="slide" data-slide="8">
+    <div class="slide-header">
+      <span class="tag"><i class="fas fa-flag-checkered"></i> Penutup</span>
+      <h2>Kesimpulan & Refleksi</h2>
+      <p>Mari ringkas apa yang telah kita pelajari hari ini</p>
+    </div>
+    <div class="conclusion-grid">
+      <div class="summary-card">
+        <h3><i class="fas fa-water"></i> Yang Kita Tahu Tentang Kelipatan</h3>
+        <ul>
+          <li>Hasil perkalian bilangan dengan bilangan asli</li>
+          <li>Memiliki banyak kemungkinan tak terhingga</li>
+          <li>Contoh: kelipatan 3 = 3, 6, 9, 12, ...</li>
+          <li>Digunakan untuk: bersamaan, berulang, total kumulatif</li>
+          <li>Konsep utama: perkalian</li>
+        </ul>
+      </div>
+      <div class="summary-card faktor">
+        <h3><i class="fas fa-puzzle-piece"></i> Yang Kita Tahu Tentang Faktor</h3>
+        <ul>
+          <li>Bilangan yang membagi habis bilangan lain</li>
+          <li>Jumlahnya terbatas dan bisa dihitung</li>
+          <li>Contoh: faktor 12 = 1, 2, 3, 4, 6, 12</li>
+          <li>Digunakan untuk: membagi rata, mengelompokkan</li>
+          <li>Konsep utama: pembagian</li>
+        </ul>
+      </div>
+    </div>
+    <div class="reflection-box">
+      <h3><i class="fas fa-heart"></i> Refleksi Pembelajaran</h3>
+      <div class="reflection-question"><p>1. Apa hal baru yang kamu pelajari hari ini?</p><textarea rows="2" id="reflection1" placeholder="Tulis jawabanmu..."></textarea></div>
+      <div class="reflection-question"><p>2. Bagian mana yang paling kamu sukai? Mengapa?</p><textarea rows="2" id="reflection2" placeholder="Tulis jawabanmu..."></textarea></div>
+      <div class="reflection-question"><p>3. Apa yang masih ingin kamu pelajari lebih lanjut?</p><textarea rows="2" id="reflection3" placeholder="Tulis jawabanmu..."></textarea></div>
+      <div style="text-align:center;margin-top:1rem"><button class="btn primary" id="saveReflectionBtn"><i class="fas fa-save"></i> Simpan Refleksi</button></div>
+    </div>
+    <div class="thank-you">
+      <div class="heart"><i class="fas fa-heart"></i></div>
+      <h2>Terima Kasih!</h2>
+      <p>Hebat sekali, <span class="student-name" id="finalName">Penjelajah</span>! Kamu telah menyelesaikan petualangan kelipatan dan faktor bersama Ariel. Teruslah berlatih, dan sampai jumpa di petualangan berikutnya!</p>
+    </div>
+  </section>
+</main>
+
+<nav class="nav-bar">
+  <button class="nav-btn secondary" id="prevBtn"><i class="fas fa-chevron-left"></i> Sebelumnya</button>
+  <div class="progress" id="progress"></div>
+  <button class="nav-btn" id="nextBtn">Selanjutnya <i class="fas fa-chevron-right"></i></button>
+</nav>
+
+<div class="toast" id="toast">
+  <i class="fas fa-info-circle"></i>
+  <div>
+    <div style="font-weight:600" id="toastTitle"></div>
+    <div style="font-size:0.9rem;opacity:0.85" id="toastMsg"></div>
+  </div>
+</div>
+
+<script>
+var state = {
+  currentSlide: 1,
+  studentName: '',
+  factorNumbers: [12, 18, 24, 30, 36, 16, 20, 28, 32, 40, 48, 50, 15, 21, 27, 35, 42, 45, 60, 72],
+  factorNumIdx: 0,
+  memoryNumbers: [12, 14, 15, 18, 20, 21, 22, 24, 26, 28, 30, 32, 34, 35, 38, 40, 42, 44, 45, 48],
+  memoryIdx: 0,
+  game1: { number: null, order: null, currentTurn: null, round: 0, sequence: [], totalRounds: 10 },
+  memory: { cards: [], flipped: [], matched: [], canFlip: false, previewing: false, attempts: 0, matches: 0, target: null }
+};
+
+var statements = [
+  { text: "Ibu membeli 24 apel. Ibu ingin membaginya rata ke dalam kantong berisi 6 apel. Berapa kantong yang dibutuhkan?", answer: "faktor", discussion: "24 &divide; 6 = 4. Kita membagi habis 24 ke dalam kantong, jadi gunakan konsep <strong>faktor</strong>. 6 adalah faktor dari 24." },
+  { text: "Andi lari setiap 3 hari sekali, Budi setiap 5 hari sekali. Kapan mereka lari bersama lagi?", answer: "kelipatan", discussion: "KPK(3,5) = 15. Mereka akan lari bersama setiap 15 hari. Kita mencari kelipatan persekutuan, jadi gunakan <strong>kelipatan</strong>." },
+  { text: "Toko roti menjual roti dalam paket 12. Ibu ingin membeli 60 roti. Berapa paket yang dibeli?", answer: "faktor", discussion: "60 &divide; 12 = 5 paket. Kita membagi 60 dengan 12, jadi gunakan <strong>faktor</strong>. 12 adalah faktor dari 60." },
+  { text: "Lampu A menyala setiap 4 detik, lampu B setiap 6 detik. Kapan keduanya menyala bersama?", answer: "kelipatan", discussion: "KPK(4,6) = 12. Kedua lampu menyala bersama setiap 12 detik. Kita mencari kelipatan persekutuan, jadi gunakan <strong>kelipatan</strong>." },
+  { text: "Bu Guru membagikan 30 krayon secara merata kepada 6 siswa. Berapa krayon setiap siswa?", answer: "faktor", discussion: "30 &divide; 6 = 5 krayon. Kita membagi habis 30 kepada 6 siswa, jadi gunakan <strong>faktor</strong>. 6 adalah faktor dari 30." },
+  { text: "Deni menabung Rp 2.000 setiap hari. Berapa total tabungan Deni setelah 7 hari?", answer: "kelipatan", discussion: "2.000 &times; 7 = Rp 14.000. Tabungan Deni adalah kelipatan 2.000, jadi gunakan <strong>kelipatan</strong>." },
+  { text: "Sepatu seharga Rp 80.000. Andi menabung Rp 8.000 setiap minggu. Berapa minggu Andi bisa beli sepatu?", answer: "faktor", discussion: "80.000 &divide; 8.000 = 10 minggu. Kita membagi 80.000 dengan 8.000, jadi gunakan <strong>faktor</strong>." },
+  { text: "Bus berangkat setiap 15 menit, kereta setiap 20 menit. Kapan mereka berangkat bersama lagi?", answer: "kelipatan", discussion: "KPK(15,20) = 60. Mereka berangkat bersama setiap 60 menit (1 jam). Gunakan <strong>kelipatan</strong>." },
+  { text: "Ibu membuat kue 48 buah. Kue dimasukkan ke dalam kotak berisi 8 buah. Berapa kotak yang dibutuhkan?", answer: "faktor", discussion: "48 &divide; 8 = 6 kotak. Kita membagi habis 48 ke dalam kotak, jadi gunakan <strong>faktor</strong>. 8 adalah faktor dari 48." },
+  { text: "Pak Budi parkir mobil pada deret ke-7. Jarak tiap deret 4 meter. Pada meter berapa mobil Pak Budi parkir?", answer: "kelipatan", discussion: "4 &times; 7 = 28 meter. Jaraknya merupakan kelipatan 4, jadi gunakan <strong>kelipatan</strong>. 28 adalah kelipatan ke-7 dari 4." }
+];
+
+var storyData = [
+  {
+    title: "Bagian 1: Mutiara di Kapal Karam",
+    text: "Ariel, sang putri duyung penuh rasa ingin tahu, gemar mengoleksi benda-benda berkilauan dari dunia manusia. Suatu pagi yang cerah, ia menemukan sebuah peti karang berisi 24 butir mutiara di kapal karam. Ia ingin menyusun mutiara-mutiara itu dalam wadah kecil yang sama besar. Jika setiap wadah berisi 6 butir mutiara, maka Ariel membutuhkan {1} wadah, sebab 6 adalah salah satu {2} dari 24. Tak lama, Flounder sahabatnya datang membawa 36 kerang indah berwarna-warni. Mereka berencana membuat kalung, dan jika setiap kalung memerlukan 4 kerang, mereka bisa membuat {3} kalung. Sambil tersenyum, Ariel menyadari bahwa 24 dan 36 sama-sama merupakan kelipatan dari {4}.",
+    answers: [
+      { id: 1, answer: "4", explanation: "24 &divide; 6 = 4 wadah. Ini pembagian rata, jadi konsep <strong>faktor</strong>." },
+      { id: 2, answer: "faktor", explanation: "6 habis membagi 24, sehingga 6 adalah <strong>faktor</strong> dari 24." },
+      { id: 3, answer: "9", explanation: "36 &divide; 4 = 9 kalung. 4 adalah <strong>faktor</strong> dari 36." },
+      { id: 4, answer: "12", explanation: "12 &times; 2 = 24 dan 12 &times; 3 = 36, jadi 24 dan 36 adalah <strong>kelipatan</strong> dari 12." }
+    ]
+  },
+  {
+    title: "Bagian 2: Pertunjukan Musik Sebastian",
+    text: "Setelah bermain mutiara, Ariel dan Flounder berenang ke taman rumput laut yang berwarna-warni. Di sana, Sebastian si kepiting sedang sibuk mengatur pertunjukan musik dengan 18 alat musik. Ia ingin menyusun alat-alat itu dalam beberapa baris yang sama banyak. Jika Sebastian membuat 3 baris, setiap baris akan berisi {5} alat musik, sebab 3 adalah salah satu {6} dari 18. Ariel membantu mengumpulkan 20 daun rumput laut untuk dekorasi panggung. Daun-daun itu akan ia susun berdasarkan kelipatan 4, sehingga daun ke-4, ke-8, ke-12, ke-16, dan ke-{7} akan dihiasi mutiara. Tidak lama kemudian, lumba-lumba datang membawa 30 buah bulu babi sebagai hadiah pertunjukan.",
+    answers: [
+      { id: 5, answer: "6", explanation: "18 &divide; 3 = 6 alat musik per baris. 3 adalah <strong>faktor</strong> dari 18." },
+      { id: 6, answer: "faktor", explanation: "3 habis membagi 18, sehingga 3 adalah <strong>faktor</strong> dari 18." },
+      { id: 7, answer: "20", explanation: "Kelipatan 4: 4, 8, 12, 16, 20. Jadi daun berikutnya yang dihiasi adalah ke-<strong>20</strong>." }
+    ]
+  },
+  {
+    title: "Bagian 3: Hadiah dari Raja Triton",
+    text: "Pertunjukan musik pun dimulai dengan meriah. Seluruh penghuni laut menari gembira, termasuk 30 kerang yang menari berpasangan. Mereka membentuk {8} pasang kerang yang menari bersama, sementara Ariel tersenyum melihat kebahagiaan teman-temannya. Setelah pertunjukan, Raja Triton memberikan 40 koin emas sebagai hadiah untuk dibagi rata kepada 8 penampil terbaik. Masing-masing penampil menerima {9} koin emas, dan ini membuat Ariel berpikir tentang kelipatan. Saat malam tiba di peti mutiaranya, ia menghitung bahwa kelipatan 8 yang ke-5 adalah {10}. Petualangan hari itu membuat Ariel semakin menyukai dunia angka di bawah laut.",
+    answers: [
+      { id: 8, answer: "15", explanation: "30 &divide; 2 = 15 pasang. 2 adalah <strong>faktor</strong> dari 30." },
+      { id: 9, answer: "5", explanation: "40 &divide; 8 = 5 koin per penampil. 8 adalah <strong>faktor</strong> dari 40." },
+      { id: 10, answer: "40", explanation: "8 &times; 5 = 40. Jadi kelipatan ke-5 dari 8 adalah <strong>40</strong>." }
+    ]
+  }
+];
+
+var problems = [
+  { text: "Pak Budi memiliki 36 ekor ayam. Ia ingin memasukkan ayam-ayam itu ke dalam kandang dengan jumlah sama di setiap kandang. Jumlah kandang yang mungkin digunakan Pak Budi adalah... (pilih semua yang benar)", options: [{t:"2 kandang",c:true},{t:"3 kandang",c:true},{t:"4 kandang",c:true},{t:"5 kandang",c:false},{t:"6 kandang",c:true},{t:"9 kandang",c:true}], discussion: "Faktor 36 = 1, 2, 3, 4, 6, 9, 12, 18, 36. Jadi kemungkinan jumlah kandang: 2, 3, 4, 6, dan 9 (selain 1, 12, 18, 36)." },
+  { text: "Kelipatan 7 antara 10 dan 50 adalah... (pilih semua yang benar)", options: [{t:"14",c:true},{t:"21",c:true},{t:"28",c:true},{t:"35",c:true},{t:"42",c:true},{t:"49",c:true}], discussion: "7&times;2=14, 7&times;3=21, 7&times;4=28, 7&times;5=35, 7&times;6=42, 7&times;7=49. Semua merupakan kelipatan 7 antara 10 dan 50." },
+  { text: "Faktor dari 30 adalah... (pilih semua yang benar)", options: [{t:"2",c:true},{t:"3",c:true},{t:"5",c:true},{t:"6",c:true},{t:"7",c:false},{t:"10",c:true},{t:"15",c:true}], discussion: "30 = 1&times;30, 2&times;15, 3&times;10, 5&times;6. Faktor 30: 1, 2, 3, 5, 6, 10, 15, 30. Jadi 7 bukan faktor 30." },
+  { text: "Ibu punya 48 permen. Akan dibagi rata ke beberapa anak. Banyak anak yang mungkin adalah... (pilih semua yang benar)", options: [{t:"4 anak",c:true},{t:"6 anak",c:true},{t:"8 anak",c:true},{t:"10 anak",c:false},{t:"12 anak",c:true}], discussion: "Faktor 48 = 1, 2, 3, 4, 6, 8, 12, 16, 24, 48. Jadi 4, 6, 8, dan 12 mungkin, sedangkan 10 tidak." },
+  { text: "Lampu A menyala setiap 5 detik, lampu B setiap 10 detik, lampu C setiap 15 detik. Pernyataan yang benar tentang kapan ketiganya menyala bersama...", options: [{t:"Setelah 20 detik",c:false},{t:"Setelah 30 detik",c:true},{t:"Setelah 60 detik",c:true},{t:"Setelah 45 detik",c:false},{t:"Setelah 90 detik",c:true}], discussion: "KPK(5,10,15) = 30. Mereka menyala bersama setiap 30 detik, jadi pada detik ke-30, 60, 90, 120, ..." },
+  { text: "Faktor dari 24 adalah... (pilih semua yang benar)", options: [{t:"2",c:true},{t:"3",c:true},{t:"4",c:true},{t:"5",c:false},{t:"6",c:true},{t:"8",c:true},{t:"12",c:true}], discussion: "24 = 1&times;24, 2&times;12, 3&times;8, 4&times;6. Faktor 24: 1, 2, 3, 4, 6, 8, 12, 24. Jadi 5 bukan faktor 24." },
+  { text: "Kelipatan 6 yang kurang dari 40 adalah... (pilih semua yang benar)", options: [{t:"6",c:true},{t:"12",c:true},{t:"18",c:true},{t:"24",c:true},{t:"30",c:true},{t:"36",c:true},{t:"42",c:false}], discussion: "6&times;1=6, 6&times;2=12, 6&times;3=18, 6&times;4=24, 6&times;5=30, 6&times;6=36. 42 sudah lebih dari 40." },
+  { text: "Pak Joko memiliki 72 tanaman. Akan ditanam dalam beberapa baris dengan jumlah tanaman sama di setiap baris. Banyak baris yang mungkin adalah... (pilih semua yang benar)", options: [{t:"6 baris",c:true},{t:"8 baris",c:true},{t:"9 baris",c:true},{t:"10 baris",c:false},{t:"12 baris",c:true}], discussion: "Faktor 72 = 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36, 72. Jadi 6, 8, 9, 12 mungkin, tetapi 10 tidak." },
+  { text: "Rudi berlatih piano setiap 3 hari, Sinta setiap 4 hari. Hari ini mereka berlatih bersama. Pernyataan yang benar...", options: [{t:"Berlatih bersama lagi setelah 7 hari",c:false},{t:"Berlatih bersama lagi setelah 12 hari",c:true},{t:"Berlatih bersama lagi setelah 24 hari",c:true},{t:"Berlatih bersama setiap 12 hari",c:true},{t:"Berlatih bersama lagi setelah 6 hari",c:false}], discussion: "KPK(3,4) = 12. Mereka berlatih bersama setiap 12 hari, jadi pada hari ke-12, 24, 36, ..." },
+  { text: "Kelipatan 9 yang kurang dari 50 adalah... (pilih semua yang benar)", options: [{t:"9",c:true},{t:"18",c:true},{t:"27",c:true},{t:"36",c:true},{t:"45",c:true},{t:"54",c:false}], discussion: "9&times;1=9, 9&times;2=18, 9&times;3=27, 9&times;4=36, 9&times;5=45. Semua < 50. 54 sudah lebih dari 50." },
+  { text: "Kelipatan 4 antara 15 dan 35 adalah... (pilih semua yang benar)", options: [{t:"16",c:true},{t:"20",c:true},{t:"24",c:true},{t:"28",c:true},{t:"32",c:true},{t:"36",c:false}], discussion: "4&times;4=16, 4&times;5=20, 4&times;6=24, 4&times;7=28, 4&times;8=32. Semua antara 15 dan 35. 36 sudah lebih dari 35." },
+  { text: "Suatu bilangan memiliki tepat 6 faktor. Bilangan yang mungkin adalah... (pilih semua yang benar)", options: [{t:"12",c:true},{t:"18",c:true},{t:"20",c:true},{t:"16",c:false},{t:"28",c:true}], discussion: "12: 1,2,3,4,6,12 (6 faktor). 18: 1,2,3,6,9,18 (6 faktor). 20: 1,2,4,5,10,20 (6 faktor). 16: 1,2,4,8,16 (5 faktor). 28: 1,2,4,7,14,28 (6 faktor)." },
+  { text: "Ibu membuat 40 buah kue. Kue akan dibungkus dalam box dengan isi sama. Jumlah kue per box yang mungkin adalah... (pilih semua yang benar)", options: [{t:"4 kue",c:true},{t:"5 kue",c:true},{t:"6 kue",c:false},{t:"8 kue",c:true},{t:"10 kue",c:true},{t:"20 kue",c:true}], discussion: "Faktor 40 = 1, 2, 4, 5, 8, 10, 20, 40. Jadi 4, 5, 8, 10, 20 mungkin, tetapi 6 tidak." },
+  { text: "Bel sekolah berbunyi setiap 30 menit, bel istirahat setiap 45 menit. Pernyataan yang benar...", options: [{t:"Bunyi bersama setelah 90 menit",c:true},{t:"Bunyi bersama setelah 60 menit",c:false},{t:"Bunyi bersama setelah 180 menit",c:true},{t:"Bunyi bersama setiap 90 menit",c:true},{t:"Bunyi bersama setelah 120 menit",c:false}], discussion: "KPK(30,45) = 90. Kedua bel berbunyi bersama setiap 90 menit, jadi pada menit ke-90, 180, 270, ..." },
+  { text: "Andi lari setiap 4 hari, Budi setiap 6 hari. Hari ini mereka lari bersama. Pernyataan yang benar...", options: [{t:"Lari bersama lagi setelah 8 hari",c:false},{t:"Lari bersama lagi setelah 12 hari",c:true},{t:"Lari bersama lagi setelah 24 hari",c:true},{t:"Lari bersama setiap 12 hari",c:true},{t:"Lari bersama lagi setelah 18 hari",c:false}], discussion: "KPK(4,6) = 12. Mereka lari bersama setiap 12 hari, jadi pada hari ke-12, 24, 36, ..." },
+  { text: "Faktor dari 100 adalah... (pilih semua yang benar)", options: [{t:"5",c:true},{t:"10",c:true},{t:"15",c:false},{t:"20",c:true},{t:"25",c:true},{t:"50",c:true}], discussion: "100 = 1&times;100, 2&times;50, 4&times;25, 5&times;20, 10&times;10. Faktor 100: 1, 2, 4, 5, 10, 20, 25, 50, 100. 15 bukan faktor 100." },
+  { text: "Roti dijual dengan paket isi 6. Ibu ingin membeli roti antara 30 dan 50 buah. Jumlah roti yang mungkin ibu beli adalah... (pilih semua yang benar)", options: [{t:"30 roti",c:true},{t:"36 roti",c:true},{t:"40 roti",c:false},{t:"42 roti",c:true},{t:"48 roti",c:true}], discussion: "Kelipatan 6 antara 30-50: 6&times;5=30, 6&times;6=36, 6&times;7=42, 6&times;8=48. 40 bukan kelipatan 6." },
+  { text: "Kelipatan 8 yang kurang dari 40 adalah... (pilih semua yang benar)", options: [{t:"8",c:true},{t:"16",c:true},{t:"24",c:true},{t:"32",c:true},{t:"40",c:false},{t:"48",c:false}], discussion: "8&times;1=8, 8&times;2=16, 8&times;3=24, 8&times;4=32. 40 tidak kurang dari 40 (harus < 40)." },
+  { text: "Sebuah kelas memiliki 24 siswa. Mereka dibagi menjadi beberapa kelompok dengan jumlah anggota sama. Banyak kelompok yang mungkin adalah... (pilih semua yang benar)", options: [{t:"3 kelompok",c:true},{t:"4 kelompok",c:true},{t:"5 kelompok",c:false},{t:"6 kelompok",c:true},{t:"8 kelompok",c:true}], discussion: "Faktor 24 = 1, 2, 3, 4, 6, 8, 12, 24. Jadi 3, 4, 6, 8 mungkin, tetapi 5 tidak." },
+  { text: "Deni menabung Rp 2.000 setiap hari. Pernyataan yang benar tentang tabungan Deni...", options: [{t:"Setelah 5 hari = Rp 10.000",c:true},{t:"Setelah 7 hari = Rp 14.000",c:true},{t:"Setelah 12 hari = Rp 24.000",c:true},{t:"Setelah 15 hari = Rp 25.000",c:false},{t:"Tabungan menggunakan konsep kelipatan",c:true}], discussion: "Tabungan = 2.000 &times; hari. 5 hari=10.000, 7 hari=14.000, 12 hari=24.000, 15 hari=30.000 (bukan 25.000). Tabungan adalah kelipatan 2.000." }
+];
+
+function showToast(type, title, msg) {
+  var toast = document.getElementById('toast');
+  toast.className = 'toast show ' + type;
+  var icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+  toast.querySelector('i').className = 'fas ' + icon;
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  setTimeout(function() { toast.classList.remove('show'); }, 3500);
+}
+
+function initBubbles() {
+  var c = document.getElementById('bubbles');
+  for (var i = 0; i < 25; i++) {
+    var b = document.createElement('div');
+    b.className = 'bubble';
+    var s = Math.random() * 40 + 10;
+    b.style.width = s + 'px';
+    b.style.height = s + 'px';
+    b.style.left = Math.random() * 100 + '%';
+    b.style.animationDuration = (Math.random() * 15 + 12) + 's';
+    b.style.animationDelay = (Math.random() * 15) + 's';
+    c.appendChild(b);
+  }
+}
+
+function initNav() {
+  var progress = document.getElementById('progress');
+  for (var i = 1; i <= 8; i++) {
+    var d = document.createElement('button');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.setAttribute('data-slide', i);
+    d.title = 'Slide ' + i;
+    (function(n) { d.addEventListener('click', function() { goToSlide(n); }); })(i);
+    progress.appendChild(d);
+  }
+  document.getElementById('prevBtn').addEventListener('click', function() {
+    if (state.currentSlide > 1) goToSlide(state.currentSlide - 1);
+  });
+  document.getElementById('nextBtn').addEventListener('click', function() {
+    if (state.currentSlide < 8) goToSlide(state.currentSlide + 1);
+  });
+  updateNavButtons();
+}
+
+function goToSlide(n) {
+  if (state.currentSlide === 1 && n > 1 && !state.studentName) {
+    showToast('error', 'Hei!', 'Masukkan namamu dulu ya!');
+    return;
+  }
+  var slides = document.querySelectorAll('.slide');
+  for (var i = 0; i < slides.length; i++) slides[i].classList.remove('active');
+  document.querySelector('.slide[data-slide="' + n + '"]').classList.add('active');
+  var dots = document.querySelectorAll('.dot');
+  for (var j = 0; j < dots.length; j++) dots[j].classList.remove('active');
+  document.querySelector('.dot[data-slide="' + n + '"]').classList.add('active');
+  state.currentSlide = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateNavButtons();
+  if (n === 8) {
+    document.getElementById('finalName').textContent = state.studentName || 'Penjelajah';
+  }
+}
+
+function updateNavButtons() {
+  document.getElementById('prevBtn').disabled = state.currentSlide === 1;
+  document.getElementById('nextBtn').disabled = state.currentSlide === 8;
+}
+
+function initSlide1() {
+  var input = document.getElementById('studentName');
+  var btn = document.getElementById('startBtn');
+  var welcome = document.getElementById('welcomeMsg');
+  input.addEventListener('input', function() {
+    btn.disabled = input.value.trim().length < 2;
+  });
+  input.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !btn.disabled) btn.click();
+  });
+  btn.addEventListener('click', function() {
+    state.studentName = input.value.trim();
+    welcome.textContent = 'Selamat datang, ' + state.studentName + '! Selamat belajar!';
+    welcome.classList.add('show');
+    setTimeout(function() { goToSlide(2); }, 1200);
+  });
+}
+
+function getFactorPairs(n) {
+  var pairs = [];
+  for (var i = 1; i <= Math.sqrt(n); i++) {
+    if (n % i === 0) pairs.push([i, n / i]);
+  }
+  return pairs;
+}
+
+function renderFactorTable() {
+  var num = state.factorNumbers[state.factorNumIdx];
+  document.getElementById('factorNumberDisplay').textContent = num;
+  document.getElementById('numIndex').textContent = state.factorNumIdx + 1;
+  var pairs = getFactorPairs(num);
+  var tbody = document.getElementById('factorTableBody');
+  tbody.innerHTML = '';
+  pairs.forEach(function(p) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td class="op">' + p[0] + '</td><td class="op">&times;</td><td><input type="number" class="factor-input" data-answer="' + p[1] + '" placeholder="?"></td><td class="equal">=</td><td class="result">' + num + '</td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById('factorFeedback').classList.remove('show');
+}
+
+function checkFactorAnswers() {
+  var inputs = document.querySelectorAll('.factor-input');
+  var correct = 0;
+  var total = inputs.length;
+  for (var i = 0; i < inputs.length; i++) {
+    inputs[i].classList.remove('correct', 'wrong');
+    var val = parseInt(inputs[i].value);
+    var ans = parseInt(inputs[i].getAttribute('data-answer'));
+    if (!isNaN(val) && val === ans) { inputs[i].classList.add('correct'); correct++; }
+    else { inputs[i].classList.add('wrong'); }
+  }
+  var fb = document.getElementById('factorFeedback');
+  fb.classList.remove('success', 'error');
+  fb.classList.add('show');
+  if (correct === total) {
+    fb.classList.add('success');
+    fb.innerHTML = '<i class="fas fa-check-circle"></i> Hebat! Semua ' + total + ' pasangan faktor benar. Faktor dari ' + state.factorNumbers[state.factorNumIdx] + ' telah kamu temukan semua!';
+  } else {
+    fb.classList.add('error');
+    fb.innerHTML = '<i class="fas fa-times-circle"></i> ' + correct + ' dari ' + total + ' pasangan benar. Periksa kembali yang masih merah!';
+  }
+}
+
+function changeFactorNumber() {
+  state.factorNumIdx = (state.factorNumIdx + 1) % state.factorNumbers.length;
+  renderFactorTable();
+}
+
+function initSlide3() {
+  renderFactorTable();
+  document.getElementById('checkFactorBtn').addEventListener('click', checkFactorAnswers);
+  document.getElementById('changeNumberBtn').addEventListener('click', changeFactorNumber);
+}
+
+function drawGame1Number() {
+  state.game1.number = Math.floor(Math.random() * 10) + 1;
+  document.getElementById('game1Number').textContent = state.game1.number;
+  document.getElementById('game1Order').textContent = 'Sekarang undi siapa yang mulai lebih dulu!';
+  resetGame1State();
+}
+
+function drawGame1Order() {
+  if (!state.game1.number) { showToast('error', 'Oops!', 'Acak angka dulu ya!'); return; }
+  state.game1.order = Math.random() < 0.5 ? 'student' : 'tutor';
+  state.game1.currentTurn = state.game1.order;
+  state.game1.round = 0;
+  state.game1.sequence = [];
+  document.getElementById('game1Sequence').innerHTML = '';
+  document.getElementById('game1TurnArea').style.display = 'block';
+  var orderText = state.game1.order === 'student' ? (state.studentName || 'Siswa') + ' duluan!' : 'Tutor duluan!';
+  document.getElementById('game1Order').textContent = orderText;
+  updateGame1Turn();
+}
+
+function updateGame1Turn() {
+  var t = state.game1.currentTurn;
+  var ind = document.getElementById('game1Turn');
+  ind.className = 'turn-indicator ' + t;
+  var label = t === 'student' ? (state.studentName || 'Siswa') : 'Tutor';
+  ind.innerHTML = '<i class="fas fa-' + (t === 'student' ? 'user' : 'chalkboard-teacher') + '"></i> Giliran: ' + label;
+  document.getElementById('multipleLabel').textContent = 'Sebutkan kelipatan ke-' + (state.game1.round + 1) + ' dari ' + state.game1.number;
+  var inp = document.getElementById('multipleInput');
+  inp.value = '';
+  inp.focus();
+}
+
+function checkMultipleAnswer() {
+  if (!state.game1.currentTurn) { showToast('error', 'Oops!', 'Acak angka dan undi urutan dulu!'); return; }
+  var inp = document.getElementById('multipleInput');
+  var val = parseInt(inp.value);
+  var expected = state.game1.number * (state.game1.round + 1);
+  if (isNaN(val) || val !== expected) {
+    showToast('error', 'Belum tepat', 'Kelipatan ke-' + (state.game1.round + 1) + ' dari ' + state.game1.number + ' adalah ' + expected + '. Coba lagi!');
+    return;
+  }
+  state.game1.sequence.push({ value: val, by: state.game1.currentTurn });
+  var chip = document.createElement('div');
+  chip.className = 'multiple-chip ' + state.game1.currentTurn;
+  chip.textContent = val;
+  document.getElementById('game1Sequence').appendChild(chip);
+  state.game1.round++;
+  state.game1.currentTurn = state.game1.currentTurn === 'student' ? 'tutor' : 'student';
+  if (state.game1.round >= state.game1.totalRounds) {
+    document.getElementById('game1TurnArea').style.display = 'none';
+    showToast('success', 'Selamat!', 'Kalian menyelesaikan ' + state.game1.totalRounds + ' kelipatan dari ' + state.game1.number + '!');
+    return;
+  }
+  updateGame1Turn();
+}
+
+function resetGame1State() {
+  state.game1.order = null;
+  state.game1.currentTurn = null;
+  state.game1.round = 0;
+  state.game1.sequence = [];
+  document.getElementById('game1TurnArea').style.display = 'none';
+  document.getElementById('game1Sequence').innerHTML = '';
+}
+
+function resetGame1() {
+  state.game1.number = null;
+  document.getElementById('game1Number').textContent = '?';
+  document.getElementById('game1Order').textContent = '';
+  resetGame1State();
+}
+
+function initSlide4Game1() {
+  document.getElementById('drawNumberBtn').addEventListener('click', drawGame1Number);
+  document.getElementById('drawOrderBtn').addEventListener('click', drawGame1Order);
+  document.getElementById('checkMultipleBtn').addEventListener('click', checkMultipleAnswer);
+  document.getElementById('resetGame1Btn').addEventListener('click', resetGame1);
+  document.getElementById('multipleInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') checkMultipleAnswer();
+  });
+}
+
+function startMemoryGame() {
+  var num = state.memoryNumbers[state.memoryIdx];
+  state.memory.target = num;
+  document.getElementById('memoryNumberDisplay').textContent = num;
+  var pairs = getFactorPairs(num);
+  var cards = [];
+  pairs.forEach(function(p) {
+    cards.push({ value: p[0], pair: p[1] });
+    cards.push({ value: p[1], pair: p[0] });
+  });
+  for (var i = cards.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = cards[i]; cards[i] = cards[j]; cards[j] = temp;
+  }
+  state.memory.cards = cards;
+  state.memory.flipped = [];
+  state.memory.matched = [];
+  state.memory.attempts = 0;
+  state.memory.matches = 0;
+  state.memory.canFlip = false;
+  state.memory.previewing = true;
+  document.getElementById('memoryAttempts').textContent = '0';
+  document.getElementById('memoryMatches').textContent = '0 / ' + pairs.length;
+  var grid = document.getElementById('memoryGrid');
+  grid.innerHTML = '';
+  cards.forEach(function(card, idx) {
+    var el = document.createElement('div');
+    el.className = 'memory-card preview';
+    el.setAttribute('data-idx', idx);
+    el.innerHTML = '<div class="card-inner"><div class="card-face card-front"><i class="fas fa-fish"></i></div><div class="card-face card-back">' + card.value + '</div></div>';
+    (function(i) { el.addEventListener('click', function() { handleMemoryClick(i); }); })(idx);
+    grid.appendChild(el);
+  });
+  var countdown = 10;
+  document.getElementById('memoryStatus').innerHTML = '<i class="fas fa-eye"></i> Hafalkan! Tutup dalam ' + countdown + ' detik...';
+  var interval = setInterval(function() {
+    countdown--;
+    if (countdown > 0) {
+      document.getElementById('memoryStatus').innerHTML = '<i class="fas fa-eye"></i> Hafalkan! Tutup dalam ' + countdown + ' detik...';
+    } else {
+      clearInterval(interval);
+      var previewCards = document.querySelectorAll('.memory-card.preview');
+      for (var k = 0; k < previewCards.length; k++) previewCards[k].classList.remove('preview');
+      state.memory.previewing = false;
+      state.memory.canFlip = true;
+      document.getElementById('memoryStatus').innerHTML = '<i class="fas fa-hand-pointer"></i> Buka 2 kartu yang berpasangan! (faktor &times; pasangan = ' + num + ')';
+    }
+  }, 1000);
+}
+
+function handleMemoryClick(idx) {
+  if (!state.memory.canFlip || state.memory.previewing) return;
+  var card = document.querySelector('.memory-card[data-idx="' + idx + '"]');
+  if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+  if (state.memory.flipped.length >= 2) return;
+  card.classList.add('flipped');
+  state.memory.flipped.push(idx);
+  if (state.memory.flipped.length === 2) {
+    state.memory.canFlip = false;
+    state.memory.attempts++;
+    document.getElementById('memoryAttempts').textContent = state.memory.attempts;
+    var i1 = state.memory.flipped[0];
+    var i2 = state.memory.flipped[1];
+    var c1 = state.memory.cards[i1];
+    var c2 = state.memory.cards[i2];
+    if (c1.value * c2.value === state.memory.target) {
+      setTimeout(function() {
+        document.querySelector('.memory-card[data-idx="' + i1 + '"]').classList.add('matched');
+        document.querySelector('.memory-card[data-idx="' + i2 + '"]').classList.add('matched');
+        state.memory.matched.push(i1, i2);
+        state.memory.matches++;
+        var totalPairs = getFactorPairs(state.memory.target).length;
+        document.getElementById('memoryMatches').textContent = state.memory.matches + ' / ' + totalPairs;
+        state.memory.flipped = [];
+        state.memory.canFlip = true;
+        if (state.memory.matches === totalPairs) {
+          document.getElementById('memoryStatus').innerHTML = '<i class="fas fa-trophy"></i> Selamat! Semua pasangan ditemukan dalam ' + state.memory.attempts + ' percobaan!';
+          showToast('success', 'Hebat!', 'Kamu menemukan semua faktor dari ' + state.memory.target + '!');
+        }
+      }, 600);
+    } else {
+      setTimeout(function() {
+        document.querySelector('.memory-card[data-idx="' + i1 + '"]').classList.remove('flipped');
+        document.querySelector('.memory-card[data-idx="' + i2 + '"]').classList.remove('flipped');
+        state.memory.flipped = [];
+        state.memory.canFlip = true;
+      }, 1000);
+    }
+  }
+}
+
+function changeMemoryNumber() {
+  state.memoryIdx = (state.memoryIdx + 1) % state.memoryNumbers.length;
+  startMemoryGame();
+}
+
+function initSlide4Game2() {
+  document.getElementById('startMemoryBtn').addEventListener('click', startMemoryGame);
+  document.getElementById('changeMemoryNumberBtn').addEventListener('click', changeMemoryNumber);
+}
+
+function initSlide5() {
+  var list = document.getElementById('statementList');
+  statements.forEach(function(s, idx) {
+    var item = document.createElement('div');
+    item.className = 'statement-item';
+    item.innerHTML = '<div><span class="statement-num">' + (idx + 1) + '</span><span class="statement-text">' + s.text + '</span></div>' +
+      '<div class="statement-actions">' +
+      '<button class="choice-btn" data-choice="kelipatan"><i class="fas fa-water"></i> Kelipatan</button>' +
+      '<button class="choice-btn" data-choice="faktor"><i class="fas fa-puzzle-piece"></i> Faktor</button>' +
+      '<button class="btn discussion-btn"><i class="fas fa-eye"></i> Pembahasan</button>' +
+      '</div><div class="statement-result"></div>';
+    list.appendChild(item);
+    var choiceBtns = item.querySelectorAll('.choice-btn');
+    for (var i = 0; i < choiceBtns.length; i++) {
+      (function(choice) { choiceBtns[i].addEventListener('click', function() { handleStatementChoice(idx, choice, item); }); })(choiceBtns[i].dataset.choice);
+    }
+    item.querySelector('.discussion-btn').addEventListener('click', function() {
+      var r = item.querySelector('.statement-result');
+      r.classList.remove('wrong', 'correct');
+      r.classList.add('show', 'info');
+      r.innerHTML = '<i class="fas fa-info-circle"></i> <strong>Pembahasan:</strong> ' + s.discussion + ' <br><strong>Jawaban:</strong> ' + s.answer;
+      item.classList.add('answered');
+    });
+  });
+}
+
+function handleStatementChoice(idx, choice, item) {
+  var s = statements[idx];
+  var result = item.querySelector('.statement-result');
+  var btns = item.querySelectorAll('.choice-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('selected', 'correct', 'wrong');
+  item.querySelector('[data-choice="' + choice + '"]').classList.add('selected');
+  if (choice === s.answer) {
+    item.querySelector('[data-choice="' + choice + '"]').classList.add('correct');
+    result.classList.remove('wrong', 'info');
+    result.classList.add('show', 'correct');
+    result.innerHTML = '<i class="fas fa-check-circle"></i> Benar! ' + s.discussion;
+  } else {
+    item.querySelector('[data-choice="' + choice + '"]').classList.add('wrong');
+    item.querySelector('[data-choice="' + s.answer + '"]').classList.add('correct');
+    result.classList.remove('correct', 'info');
+    result.classList.add('show', 'wrong');
+    result.innerHTML = '<i class="fas fa-times-circle"></i> Belum tepat. Jawaban benar: <strong>' + s.answer + '</strong>. ' + s.discussion;
+  }
+  item.classList.add('answered');
+}
+
+function initSlide6() {
+  var container = document.getElementById('storyContainer');
+  storyData.forEach(function(para, pIdx) {
+    var div = document.createElement('div');
+    div.className = 'story-paragraph';
+    var textHtml = para.text.replace(/\{(\d+)\}/g, function(m, id) {
+      return '<input type="text" class="story-input" data-answer-id="' + id + '" placeholder="?">';
+    });
+    var answersHtml = '';
+    para.answers.forEach(function(a) {
+      answersHtml += '<div style="margin-bottom:0.5rem"><strong>[' + a.id + ']</strong> Jawaban: <span class="ans">' + a.answer + '</span> &mdash; ' + a.explanation + '</div>';
+    });
+    div.innerHTML = '<h4><i class="fas fa-bookmark"></i> ' + para.title + '</h4>' +
+      '<p class="story-text">' + textHtml + '</p>' +
+      '<div class="story-controls">' +
+      '<button class="btn primary check-story-btn" data-para="' + pIdx + '"><i class="fas fa-check"></i> Cek Jawaban</button>' +
+      '<button class="btn discussion-story-btn" data-para="' + pIdx + '"><i class="fas fa-eye"></i> Pembahasan</button>' +
+      '</div>' +
+      '<div class="story-discussion">' + answersHtml + '</div>';
+    container.appendChild(div);
+  });
+  container.querySelectorAll('.check-story-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var pIdx = parseInt(btn.getAttribute('data-para'));
+      var para = storyData[pIdx];
+      var paraDiv = btn.closest('.story-paragraph');
+      var inputs = paraDiv.querySelectorAll('.story-input');
+      var correct = 0;
+      inputs.forEach(function(inp) {
+        inp.classList.remove('correct', 'wrong');
+        var id = parseInt(inp.getAttribute('data-answer-id'));
+        var ansObj = para.answers.find(function(a) { return a.id === id; });
+        var val = inp.value.trim().toLowerCase();
+        if (val === ansObj.answer.toLowerCase()) { inp.classList.add('correct'); correct++; }
+        else { inp.classList.add('wrong'); }
+      });
+      if (correct === inputs.length) {
+        showToast('success', 'Hebat!', 'Semua jawaban di paragraf ini benar!');
+      } else {
+        showToast('error', 'Periksa lagi', correct + ' dari ' + inputs.length + ' jawaban benar.');
+      }
+    });
+  });
+  container.querySelectorAll('.discussion-story-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var paraDiv = btn.closest('.story-paragraph');
+      var disc = paraDiv.querySelector('.story-discussion');
+      disc.classList.toggle('show');
+    });
+  });
+}
+
+function initSlide7() {
+  var list = document.getElementById('problemList');
+  problems.forEach(function(p, idx) {
+    var item = document.createElement('div');
+    item.className = 'problem-item';
+    var optionsHtml = '';
+    p.options.forEach(function(opt, oIdx) {
+      optionsHtml += '<div class="option-item" data-idx="' + oIdx + '" data-correct="' + opt.c + '"><div class="option-checkbox"></div><span>' + opt.t + '</span></div>';
+    });
+    var correctAnswers = p.options.filter(function(o) { return o.c; }).map(function(o) { return o.t; }).join(', ');
+    item.innerHTML = '<div class="problem-header"><span class="problem-num">' + (idx + 1) + '</span><span class="problem-text">' + p.text + '</span></div>' +
+      '<div class="options-grid">' + optionsHtml + '</div>' +
+      '<div class="story-controls">' +
+      '<button class="btn primary check-problem-btn"><i class="fas fa-check"></i> Cek Jawaban</button>' +
+      '<button class="btn discussion-problem-btn"><i class="fas fa-eye"></i> Pembahasan</button>' +
+      '</div>' +
+      '<div class="problem-discussion"><strong>Pembahasan:</strong> ' + p.discussion + '<br><span class="correct-answer">Jawaban benar: ' + correctAnswers + '</span></div>';
+    list.appendChild(item);
+    var optionItems = item.querySelectorAll('.option-item');
+    for (var i = 0; i < optionItems.length; i++) {
+      optionItems[i].addEventListener('click', function() {
+        this.classList.toggle('selected');
+        item.classList.add('answered');
+      });
+    }
+    item.querySelector('.check-problem-btn').addEventListener('click', function() {
+      var opts = item.querySelectorAll('.option-item');
+      var allCorrect = true;
+      for (var j = 0; j < opts.length; j++) {
+        opts[j].classList.remove('correct', 'wrong');
+        var isSelected = opts[j].classList.contains('selected');
+        var isCorrect = opts[j].getAttribute('data-correct') === 'true';
+        if (isSelected && isCorrect) { opts[j].classList.add('correct'); }
+        else if (isSelected && !isCorrect) { opts[j].classList.add('wrong'); allCorrect = false; }
+        else if (!isSelected && isCorrect) { opts[j].classList.add('wrong'); allCorrect = false; }
+      }
+      if (allCorrect) showToast('success', 'Benar!', 'Semua jawaban pada soal ini tepat!');
+      else showToast('error', 'Periksa lagi', 'Ada jawaban yang belum tepat.');
+    });
+    item.querySelector('.discussion-problem-btn').addEventListener('click', function() {
+      item.querySelector('.problem-discussion').classList.toggle('show');
+    });
+  });
+  document.getElementById('checkAllBtn').addEventListener('click', function() {
+    var btns = document.querySelectorAll('.check-problem-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].click();
+    showToast('info', 'Selesai', 'Semua jawaban telah diperiksa!');
+  });
+  document.getElementById('showAllDiscussionBtn').addEventListener('click', function() {
+    var discs = document.querySelectorAll('.problem-discussion');
+    for (var i = 0; i < discs.length; i++) discs[i].classList.add('show');
+    showToast('info', 'Pembahasan', 'Semua pembahasan telah ditampilkan!');
+  });
+}
+
+function initSlide8() {
+  document.getElementById('saveReflectionBtn').addEventListener('click', function() {
+    var r1 = document.getElementById('reflection1').value.trim();
+    var r2 = document.getElementById('reflection2').value.trim();
+    var r3 = document.getElementById('reflection3').value.trim();
+    if (r1.length < 3 && r2.length < 3 && r3.length < 3) {
+      showToast('error', 'Hmm...', 'Isi minimal satu refleksi dulu ya!');
+      return;
+    }
+    showToast('success', 'Tersimpan!', 'Refleksi kamu telah tersimpan. Terima kasih sudah belajar!');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initBubbles();
+  initNav();
+  initSlide1();
+  initSlide3();
+  initSlide4Game1();
+  initSlide4Game2();
+  initSlide5();
+  initSlide6();
+  initSlide7();
+  initSlide8();
+});
+</script>
+</body>
+</html>
