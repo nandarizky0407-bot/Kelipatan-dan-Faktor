@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Faktor — Latihan Mencari Faktor dengan Tabel Perkalian Berpasangan</title>
+<meta name="description" content="Slide presentasi interaktif latihan mencari faktor bilangan menggunakan tabel perkalian berpasangan. 100 bilangan, jumlah baris ditemukan sendiri, cek jawaban otomatis.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✖️</text></svg>">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#4f46e5; --primary-dark:#3730a3; --accent:#f59e0b;
+  --ok:#16a34a; --okbg:#f0fdf4; --bad:#dc2626; --badbg:#fef2f2;
+  --dup:#d97706; --dupbg:#fffbeb;
+  --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --card:#ffffff;
+  --radius:16px; --shadow:0 10px 30px rgba(51,65,85,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--ink);min-height:100vh;background:linear-gradient(160deg,#eef2ff 0%,#f0fdfa 45%,#fef9c3 100%);background-attachment:fixed}
+
+/* ===== Header ===== */
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);flex-wrap:wrap}
+header .brand{font-weight:800;font-size:18px;color:var(--primary-dark);display:flex;align-items:center;gap:8px;margin-right:auto}
+.brand .logo{background:linear-gradient(135deg,var(--primary),#0ea5e9);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px}
+#counter{font-size:14px;font-weight:700;color:var(--muted);background:#f1f5f9;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.hbtn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;font-size:14.5px;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit;color:var(--ink)}
+.hbtn:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px)}
+
+/* ===== Layout ===== */
+main{max-width:880px;margin:0 auto;padding:24px 16px 60px}
+.anim{animation:slidein .35s ease both}
+@keyframes slidein{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px;border:1px solid #fff}
+
+/* ===== Exercise ===== */
+.numbox{text-align:center;margin-bottom:22px}
+.numlabel{font-size:16px;color:var(--muted);font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.bignum{font-size:84px;font-weight:900;line-height:1.05;margin:4px 0;background:linear-gradient(135deg,var(--primary),#0ea5e9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.numhint{color:var(--muted);font-size:15px}
+.badge-done{display:inline-block;margin-top:10px;background:#dcfce7;color:#15803d;border:1px solid #86efac;padding:6px 14px;border-radius:999px;font-weight:700;font-size:14px}
+
+.table{display:flex;flex-direction:column;gap:10px;max-width:580px;margin:0 auto}
+.row{display:flex;align-items:center;gap:12px;background:#f8fafc;border:2px solid var(--line);border-radius:14px;padding:10px 14px;transition:border-color .15s,background .15s}
+.row input{width:120px;height:52px;font-size:26px;font-weight:700;text-align:center;border:2px solid #cbd5e1;border-radius:10px;color:var(--ink);outline:none;background:#fff;transition:.15s;font-family:inherit}
+.row input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(79,70,229,.15)}
+.row input::-webkit-outer-spin-button,.row input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.row input[type=number]{appearance:textfield;-moz-appearance:textfield}
+.op{font-size:26px;font-weight:800;color:var(--muted)}
+.eq{font-size:24px;font-weight:800;margin-left:auto;color:var(--primary-dark);background:#eef2ff;padding:8px 14px;border-radius:10px;min-width:90px;text-align:center}
+.ico{width:30px;font-size:22px;font-weight:900;text-align:center;flex:0 0 30px}
+.row.ok{border-color:var(--ok);background:var(--okbg)}   .row.ok .ico{color:var(--ok)}
+.row.bad{border-color:var(--bad);background:var(--badbg);animation:shake .3s} .row.bad .ico{color:var(--bad)}
+.row.dup{border-color:var(--dup);background:var(--dupbg)} .row.dup .ico{color:var(--dup)}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+.btnrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 8px}
+.btn{border:none;border-radius:12px;padding:12px 20px;font-size:16px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,var(--primary),#6366f1);color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.35)}
+.btn.primary:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.btn.success{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 6px 16px rgba(22,163,74,.35);font-size:18px;padding:14px 28px}
+.btn.success:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.btn.ghost{background:#fff;border:2px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--primary);color:var(--primary)}
+.btn.ghost.danger{color:var(--bad)}
+.btn.ghost.danger:hover{border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none;box-shadow:none}
+
+.fb{max-width:660px;margin:14px auto 0;padding:14px 18px;border-radius:14px;font-size:16.5px;line-height:1.55;border:2px solid transparent}
+.fb.info{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+.fb.err{background:var(--badbg);border-color:#fecaca;color:#b91c1c}
+.fb.warn{background:var(--dupbg);border-color:#fde68a;color:#b45309}
+.fb.part{background:var(--okbg);border-color:#bbf7d0;color:#15803d}
+.fb.win{background:linear-gradient(135deg,#fefce8,#f0fdf4);border-color:#86efac;color:#166534;font-size:18px;font-weight:700}
+
+.tip{max-width:660px;margin:14px auto 0;font-size:14.5px;color:var(--muted);background:#f8fafc;border:1px dashed var(--line);border-radius:12px;padding:10px 14px;line-height:1.55}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+.pos{font-weight:700;color:var(--muted);font-size:15px}
+
+/* ===== Cover & penutup ===== */
+.cover{text-align:center;padding:52px 28px}
+.cover .emoji{font-size:60px}
+.cover h1{font-size:40px;font-weight:900;margin:10px 0 8px;background:linear-gradient(135deg,var(--primary),#0ea5e9,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover p.sub{font-size:17.5px;color:#475569;max-width:600px;margin:0 auto 20px;line-height:1.65}
+.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+.chip{background:#eef2ff;color:var(--primary-dark);font-weight:700;font-size:14.5px;padding:8px 14px;border-radius:999px}
+
+/* ===== Petunjuk ===== */
+.guide h2{font-size:26px;margin-bottom:12px;color:var(--primary-dark)}
+.gintro{font-size:16.5px;line-height:1.65;color:#334155;margin-bottom:6px}
+.example{background:#f8fafc;border-radius:14px;padding:16px;border:1px solid var(--line);margin:16px 0}
+.extitle{font-weight:800;margin-bottom:10px;color:var(--primary-dark);font-size:16px}
+.step{display:flex;gap:14px;margin:14px 0;align-items:flex-start}
+.step .n{flex:0 0 34px;height:34px;border-radius:50%;background:var(--primary);color:#fff;font-weight:800;display:grid;place-items:center;font-size:16px}
+.step p{line-height:1.6;font-size:16px}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.lg{border-radius:12px;padding:10px 14px;font-size:14.5px;border:2px solid;line-height:1.45}
+.lg.ok{background:var(--okbg);border-color:#86efac;color:#15803d}
+.lg.bad{background:var(--badbg);border-color:#fca5a5;color:#b91c1c}
+.lg.dup{background:var(--dupbg);border-color:#fcd34d;color:#b45309}
+.lg.info{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
+
+/* ===== Modal papan progres ===== */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px}
+.modal[hidden]{display:none}
+.modal .backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px)}
+.panel{position:relative;background:#fff;border-radius:20px;max-width:760px;width:100%;max-height:86vh;overflow:auto;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.panel h3{font-size:22px;color:var(--primary-dark);margin-bottom:4px}
+.panel .stats{color:var(--muted);font-size:14.5px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}
+.st{aspect-ratio:1;border:none;border-radius:10px;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit;transition:.12s;padding:0}
+.st:hover{transform:scale(1.08)}
+.st.todo{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.st.started{background:#fef3c7;color:#b45309;border:1px solid #fde68a}
+.st.done{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.st.cur{outline:3px solid var(--primary);outline-offset:1px}
+.legend2{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:13.5px;color:var(--muted)}
+.dot{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+.closex{position:absolute;top:12px;right:12px;border:none;background:#f1f5f9;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer;font-family:inherit}
+.closex:hover{background:#e2e8f0}
+
+/* ===== Konfeti ===== */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:99}
+.confetti-wrap i{position:absolute;top:-26px;border-radius:2px;opacity:.95;animation:fall linear forwards;will-change:transform}
+@keyframes fall{from{transform:translateY(-4vh) rotate(0deg)}to{transform:translateY(116vh) rotate(680deg)}}
+
+@media (max-width:640px){
+  .bignum{font-size:64px}
+  .card{padding:18px}
+  .cover{padding:36px 16px}
+  .cover h1{font-size:30px}
+  .row{gap:8px;padding:8px 10px}
+  .row input{width:84px;height:46px;font-size:20px}
+  .eq{min-width:66px;font-size:18px;padding:6px 10px}
+  .op{font-size:20px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(48px,1fr))}
+  .legend{grid-template-columns:1fr}
+  .btn{padding:11px 14px;font-size:15px}
+  .btn.success{font-size:16px;padding:12px 20px}
+  .pos{font-size:13.5px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><span class="logo">✖</span> Petualangan Faktor</div>
+  <span id="counter">Sampul</span>
+  <button class="hbtn" data-action="board" title="Lihat papan progres 100 bilangan">📊 Papan Progres</button>
+  <button class="hbtn" data-action="home" title="Kembali ke sampul">🏠</button>
+  <button class="hbtn" data-action="full" title="Mode layar penuh">⛶ Layar Penuh</button>
+</header>
+
+<main><div id="slide"></div></main>
+
+<!-- Modal papan progres -->
+<div id="board" class="modal" hidden>
+  <div class="backdrop" data-action="closeboard"></div>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Papan progres latihan">
+    <button class="closex" data-action="closeboard" aria-label="Tutup papan progres">✕</button>
+    <h3>📊 Papan Progres</h3>
+    <div class="stats" id="bstats"></div>
+    <div class="grid" id="bgrid"></div>
+    <div class="legend2">
+      <span><i class="dot" style="background:#f1f5f9;border:1px solid #e2e8f0"></i>Belum dikerjakan</span>
+      <span><i class="dot" style="background:#fef3c7;border:1px solid #fde68a"></i>Sedang dikerjakan</span>
+      <span><i class="dot" style="background:#dcfce7;border:1px solid #86efac"></i>Tuntas (semua pasangan benar)</span>
+    </div>
+    <p class="tip" style="margin-top:12px">Klik salah satu bilangan untuk melompat ke latihannya. Progres tersimpan otomatis di peramban ini, jadi aman jika halaman ditutup dan dibuka lagi.</p>
+  </div>
+</div>
+
+<noscript><p style="text-align:center;padding:20px;font-weight:700">Halaman ini membutuhkan JavaScript untuk berfungsi. Aktifkan JavaScript pada peramban Anda.</p></noscript>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= Konstanta ================= */
+var KEY = 'latihanFaktor_v1';
+var NUM_MIN = 2, NUM_MAX = 101;           // 100 bilangan berbeda: 2..101
+var MAX_ROWS = 12;                        // batas aman baris (jumlah pasangan tidak pernah diberitahu)
+var SLIDES = NUM_MAX + 2;                 // 0 sampul, 1 petunjuk, 2..101 latihan (bilangan = indeks slide), 102 penutup
+var COLORS = ['#4f46e5','#0ea5e9','#22c55e','#f59e0b','#ef4444','#ec4899','#a855f7','#14b8a6'];
+
+/* ================= State & persistensi ================= */
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var d = JSON.parse(raw);
+      if(d && typeof d === 'object' && d.rows) return d;
+    }
+  }catch(e){}
+  return { rows:{}, done:{}, last:0 };
+}
+var state = load();
+var saveT = null;
+function save(){ clearTimeout(saveT); saveT = setTimeout(saveNow, 200); }
+function saveNow(){
+  clearTimeout(saveT);
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+}
+
+/* ================= Helper ================= */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function parseNum(v){
+  if(!/^\d{1,7}$/.test(v)) return null;
+  var x = parseInt(v,10);
+  return x >= 1 ? x : null;
+}
+function totalPairs(n){                    // banyaknya pasangan faktor a×b=n dengan a<=b
+  var c = 0;
+  for(var a = 1; a*a <= n; a++){
+    if(n % a === 0){ c += (a === n/a) ? 1 : 2; }
+  }
+  return Math.ceil(c/2);
+}
+function curNumber(){
+  var i = state.last;
+  return (i >= NUM_MIN && i <= NUM_MAX) ? i : null;
+}
+function getRows(n){
+  if(!state.rows[n] || !state.rows[n].length) state.rows[n] = [['','']];
+  return state.rows[n];
+}
+function hasContent(n){
+  var r = state.rows[n];
+  if(!r) return false;
+  for(var i=0;i<r.length;i++){ if((r[i][0] && r[i][0].trim() !== '') || (r[i][1] && r[i][1].trim() !== '')) return true; }
+  return false;
+}
+function doneCount(){ var c=0; for(var k in state.done){ if(state.done[k]) c++; } return c; }
+function startedCount(){ var c=0; for(var n=NUM_MIN;n<=NUM_MAX;n++){ if(hasContent(n) && !state.done[n]) c++; } return c; }
+function slideLabel(i){
+  if(i === 0) return '🏠 Sampul';
+  if(i === 1) return '📖 Petunjuk';
+  if(i <= NUM_MAX) return 'Latihan ' + (i-1) + '/100 · Bilangan ' + i;
+  return '🏆 Penutup';
+}
+
+/* ================= Referensi DOM ================= */
+var slideEl = document.getElementById('slide');
+var counterEl = document.getElementById('counter');
+var boardEl = document.getElementById('board');
+var bgridEl = document.getElementById('bgrid');
+var bstatsEl = document.getElementById('bstats');
+
+/* ================= Pembuat HTML ================= */
+function rowHTML(idx, n){
+  var pair = getRows(n)[idx];
+  return '<div class="row" data-idx="' + idx + '">' +
+    '<input type="number" inputmode="numeric" min="1" step="1" class="fa" value="' + esc(pair[0]) + '" placeholder="?" aria-label="bilangan pertama">' +
+    '<span class="op">×</span>' +
+    '<input type="number" inputmode="numeric" min="1" step="1" class="fb" value="' + esc(pair[1]) + '" placeholder="?" aria-label="bilangan kedua">' +
+    '<span class="eq">= ' + n + '</span>' +
+    '<span class="ico"></span>' +
+  '</div>';
+}
+function exRowStatic(a, b, cls, ico){
+  return '<div class="row ' + cls + '">' +
+    '<input type="number" value="' + a + '" readonly tabindex="-1" aria-label="contoh bilangan pertama">' +
+    '<span class="op">×</span>' +
+    '<input type="number" value="' + b + '" readonly tabindex="-1" aria-label="contoh bilangan kedua">' +
+    '<span class="eq">= 12</span>' +
+    '<span class="ico">' + ico + '</span>' +
+  '</div>';
+}
+function navHTML(i){
+  var left = '<button class="btn ghost" data-action="prev">⬅ Sebelumnya</button>';
+  var right = '<button class="btn ghost" data-action="next">Berikutnya ➡</button>';
+  var mid;
+  if(i >= NUM_MIN && i <= NUM_MAX) mid = '<div class="pos">Latihan ' + (i-1) + ' dari 100</div>';
+  else mid = '<div class="pos">Slide ' + (i+1) + ' dari ' + SLIDES + '</div>';
+  return '<div class="nav">' + left + mid + right + '</div>';
+}
+function coverHTML(){
+  return '<section class="card cover">' +
+    '<div class="emoji">✖️🧩</div>' +
+    '<h1>Petualangan Faktor</h1>' +
+    '<p class="sub">Latihan mencari <b>faktor</b> dari sebuah bilangan menggunakan <b>tabel perkalian berpasangan</b>. Tugasmu: temukan semua pasangan bilangan yang jika dikalikan hasilnya tepat sama dengan bilangan target!</p>' +
+    '<div class="chips">' +
+      '<span class="chip">💯 100 bilangan latihan</span>' +
+      '<span class="chip">✖️ Tabel perkalian berpasangan</span>' +
+      '<span class="chip">✅ Cek jawaban otomatis</span>' +
+      '<span class="chip">🤫 Jumlah baris? Temukan sendiri!</span>' +
+      '<span class="chip">💾 Progres tersimpan otomatis</span>' +
+    '</div>' +
+    '<div class="btnrow">' +
+      '<button class="btn primary" data-action="guide">📖 Baca Petunjuk</button>' +
+      '<button class="btn success" data-action="start">🚀 Mulai Latihan</button>' +
+    '</div>' +
+  '</section>';
+}
+function guideHTML(){
+  return '<section class="card guide">' +
+    '<h2>📖 Petunjuk Pengerjaan</h2>' +
+    '<p class="gintro">Sebelum mulai, pahami dulu: <b>faktor</b> adalah bilangan yang membagi habis suatu bilangan tanpa sisa. Karena perkalian itu <i>berpasangan</i>, faktor selalu muncul dalam pasangan: jika <b>a × b = N</b>, maka a dan b sama-sama faktor dari N. Contoh: 3 × 4 = 12, jadi 3 dan 4 adalah pasangan faktor dari 12.</p>' +
+    '<div class="example">' +
+      '<div class="extitle">Contoh: mencari semua pasangan faktor dari 12 (ini tampilannya setelah diperiksa)</div>' +
+      exRowStatic(1,12,'ok','✔') +
+      exRowStatic(2,6,'ok','✔') +
+      exRowStatic(3,4,'ok','✔') +
+      exRowStatic(4,3,'dup','⚠') +
+      exRowStatic(5,12,'bad','✗') +
+      '<div class="fb warn" style="margin-top:12px">⚠ Hampir sempurna! Perkalianmu benar, tetapi 4 × 3 ditulis dua kali (sama saja dengan 3 × 4 — cukup satu kali), dan 5 × 12 = 60, bukan 12.</div>' +
+    '</div>' +
+    '<div class="step"><div class="n">1</div><p>Amati <b>bilangan target</b> di bagian atas slide. Awalnya tabel hanya memiliki <b>1 baris</b> kosong — jumlah baris yang dibutuhkan <b>tidak akan diberitahu</b>, itu bagian dari tantangannya!</p></div>' +
+    '<div class="step"><div class="n">2</div><p>Isi pasangan bilangan pada baris yang tersedia. Untuk 12 misalnya: 1 × 12. Pikirkan pasangan lain: 2 × 6? 3 × 4?</p></div>' +
+    '<div class="step"><div class="n">3</div><p>Masih ada pasangan lain yang terpikir? Tekan tombol <b>➕ Tambah Baris</b> sebanyak yang kamu perlukan. Tidak yakin sudah lengkap? Tekan saja <b>✔ Cek Jawaban</b> — sistem akan mengonfirmasi apakah sudah ada yang kurang, tanpa memberi tahu jawabannya.</p></div>' +
+    '<div class="step"><div class="n">4</div><p>Setelah diperiksa, setiap baris diberi warna sesuai kondisinya:</p></div>' +
+    '<div class="legend">' +
+      '<div class="lg ok">✔ <b>Hijau</b> — perkalian benar, pasangan faktor valid.</div>' +
+      '<div class="lg bad">✗ <b>Merah</b> — belum benar: hasil kali tidak sama dengan target, isian tidak lengkap, atau bukan bilangan bulat 1, 2, 3, …</div>' +
+      '<div class="lg dup">⚠ <b>Oranye</b> — pasangan yang sama ditulis lebih dari sekali (urutan ditukar pun tetap dihitung sama).</div>' +
+      '<div class="lg info">💬 <b>Pesan di bawah tabel</b> — mengonfirmasi secara keseluruhan: apakah semua jawaban sudah benar dan lengkap, atau masih ada yang belum.</div>' +
+    '</div>' +
+    '<div class="step"><div class="n">5</div><p>Bilangan target dinyatakan <b>tuntas 🎉</b> bila semua pasangan faktornya ditemukan dan semua baris benar. Gunakan <b>📊 Papan Progres</b> di pojok kanan atas untuk melihat seluruh 100 bilangan dan melompat ke latihan mana pun. Navigasi juga bisa memakai tombol panah ⬅ ➡ pada keyboard. Progresmu tersimpan otomatis.</p></div>' +
+    '<div class="btnrow"><button class="btn success" data-action="start">🚀 Mulai Latihan</button></div>' +
+  '</section>';
+}
+function exerciseHTML(n){
+  var rows = getRows(n);
+  var h = '<section class="card ex">';
+  h += '<div class="numbox">' +
+    '<div class="numlabel">Cari semua pasangan faktor dari</div>' +
+    '<div class="bignum">' + n + '</div>' +
+    '<div class="numhint">Tulis setiap pasangan berupa <b>? × ? = ' + n + '</b> — pasangan yang sama cukup ditulis sekali</div>' +
+    (state.done[n] ? '<div class="badge-done">✅ Latihan ini sudah tuntas — kamu menemukan semua pasangannya</div>' : '') +
+  '</div>';
+  h += '<div class="table" id="rows">';
+  for(var i=0;i<rows.length;i++){ h += rowHTML(i, n); }
+  h += '</div>';
+  h += '<div class="btnrow">' +
+    '<button class="btn primary" data-action="add">➕ Tambah Baris</button>' +
+    '<button class="btn ghost" data-action="del">➖ Hapus Baris</button>' +
+    '<button class="btn success" data-action="check">✔ Cek Jawaban</button>' +
+    '<button class="btn ghost danger" data-action="reset">↺ Mulai Ulang Bilangan Ini</button>' +
+  '</div>';
+  h += '<div id="feedback" class="fb info" aria-live="polite">📝 Isi pasangan bilangan pada tabel di atas, lalu tekan <b>✔ Cek Jawaban</b>. Isianmu tersimpan otomatis.</div>';
+  h += '<div class="tip">💡 <b>Ingat:</b> 1 dan bilangan itu sendiri selalu menjadi pasangan faktor (1 × ' + n + '). Menulis <i>a × b</i> atau <i>b × a</i> hasilnya sama — cukup salah satu saja. Kalau pesan pemeriksaan bilang masih ada pasangan yang belum ditemukan, berarti bilangan ini punya lebih banyak faktor dari yang kamu kira!</div>';
+  h += navHTML(n);
+  h += '</section>';
+  return h;
+}
+function closingHTML(){
+  return '<section class="card cover">' +
+    '<div class="emoji">🏆</div>' +
+    '<h1>Kamu Sampai di Ujung!</h1>' +
+    '<p class="sub">Kamu telah menelusuri seluruh 100 bilangan latihan. Saat ini <b id="finalstats">' + doneCount() + ' dari 100</b> bilangan sudah tuntas' + (startedCount() > 0 ? ', dan ' + startedCount() + ' bilangan masih dalam pengerjaan' : '') + '.</p>' +
+    '<p class="sub">Buka 📊 Papan Progres untuk melihat bilangan mana yang masih bisa kamu kejar, lalu kembali lagi kapan saja — progresmu tersimpan di peramban ini.</p>' +
+    '<div class="btnrow">' +
+      '<button class="btn primary" data-action="board">📊 Buka Papan Progres</button>' +
+      '<button class="btn ghost" data-action="home">🏠 Kembali ke Sampul</button>' +
+    '</div>' +
+  '</section>';
+}
+
+/* ================= Render & navigasi ================= */
+function render(){
+  var i = state.last;
+  if(!(i >= 0 && i <= SLIDES-1)) i = 0;
+  counterEl.textContent = slideLabel(i);
+  if(i === 0)          slideEl.innerHTML = coverHTML();
+  else if(i === 1)     slideEl.innerHTML = guideHTML();
+  else if(i <= NUM_MAX){ slideEl.innerHTML = exerciseHTML(i); updateRowButtons(); }
+  else                 slideEl.innerHTML = closingHTML();
+  slideEl.classList.remove('anim');
+  void slideEl.offsetWidth;
+  slideEl.classList.add('anim');
+}
+function go(i){
+  i = Math.max(0, Math.min(SLIDES-1, i));
+  state.last = i;
+  saveNow();
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ================= Interaksi latihan ================= */
+function setFeedback(cls, html){
+  var fb = document.getElementById('feedback');
+  if(fb){ fb.className = 'fb ' + cls; fb.innerHTML = html; }
+}
+function updateRowButtons(){
+  var n = curNumber();
+  if(n == null) return;
+  var rows = getRows(n);
+  var add = slideEl.querySelector('[data-action="add"]');
+  var del = slideEl.querySelector('[data-action="del"]');
+  if(add) add.disabled = rows.length >= MAX_ROWS;
+  if(del) del.disabled = rows.length <= 1;
+}
+function addRow(focus){
+  var n = curNumber();
+  if(n == null) return;
+  var rows = getRows(n);
+  if(rows.length >= MAX_ROWS) return;
+  rows.push(['','']);
+  var cont = document.getElementById('rows');
+  if(cont){
+    cont.insertAdjacentHTML('beforeend', rowHTML(rows.length-1, n));
+    if(focus){
+      var last = cont.lastElementChild;
+      if(last) last.querySelector('.fa').focus();
+    }
+  }
+  updateRowButtons();
+  save();
+}
+function delRow(){
+  var n = curNumber();
+  if(n == null) return;
+  var rows = getRows(n);
+  if(rows.length <= 1) return;
+  rows.pop();
+  var cont = document.getElementById('rows');
+  if(cont && cont.lastElementChild) cont.removeChild(cont.lastElementChild);
+  updateRowButtons();
+  save();
+}
+function resetEx(){
+  var n = curNumber();
+  if(n == null) return;
+  if(!window.confirm('Mulai ulang bilangan ' + n + '? Semua isian pada latihan ini akan dihapus.')) return;
+  state.rows[n] = [['','']];
+  state.done[n] = false;
+  saveNow();
+  render();
+}
+function check(){
+  var n = curNumber();
+  if(n == null) return;
+  var rowEls = Array.prototype.slice.call(slideEl.querySelectorAll('#rows .row'));
+  var rows = getRows(n);
+  var filled = 0, bad = 0, dups = 0;
+  var seen = {}, uniq = {};
+
+  rowEls.forEach(function(el, idx){
+    var a = (rows[idx][0] || '').trim();
+    var b = (rows[idx][1] || '').trim();
+    el.classList.remove('ok','bad','dup');
+    var ico = el.querySelector('.ico');
+    if(a === '' && b === ''){ ico.textContent = ''; return; }
+    filled++;
+    var va = parseNum(a), vb = parseNum(b);
+    if(va == null || vb == null || va * vb !== n){
+      el.classList.add('bad'); ico.textContent = '✗'; bad++; return;
+    }
+    var key = Math.min(va,vb) + '×' + Math.max(va,vb);
+    if(seen[key] !== undefined){
+      el.classList.add('dup'); ico.textContent = '⚠'; dups++;
+    } else {
+      el.classList.add('ok'); ico.textContent = '✔';
+      seen[key] = idx; uniq[key] = true;
+    }
+  });
+
+  var total = totalPairs(n);
+  var uniqCount = 0, k;
+  for(k in uniq){ if(uniq[k]) uniqCount++; }
+
+  if(filled === 0){
+    setFeedback('info', '📝 Belum ada isian. Tulis satu pasangan bilangan terlebih dahulu (misalnya 1 dan ' + n + '), lalu tekan Cek Jawaban.');
+  } else if(bad > 0){
+    setFeedback('err', '✗ <b>Belum semua benar.</b> Ada <b>' + bad + ' baris</b> bertanda ✗ merah — hasil kalinya belum tepat, isian belum lengkap, atau bukan bilangan bulat 1, 2, 3, … Perbaiki baris merah, lalu tekan Cek Jawaban lagi.');
+  } else if(dups > 0){
+    setFeedback('warn', '⚠ <b>Hampir sempurna!</b> Semua perkalianmu benar, tetapi ada <b>' + dups + ' baris</b> bertanda ⚠ oranye — pasangan itu sudah ditulis sebelumnya (urutan ditukar pun tetap dihitung sama). Satu pasangan cukup ditulis sekali; ganti baris oranye dengan pasangan lain yang belum pernah kamu tulis!');
+  } else if(uniqCount < total){
+    setFeedback('part', '✅ <b>Kerja bagus!</b> Semua ' + filled + ' baris yang kamu isi benar. <b>Tetapi masih ada pasangan faktor ' + n + ' yang belum ditemukan.</b> Tekan <b>➕ Tambah Baris</b> dan teruskan mencari, lalu cek lagi!');
+  } else {
+    setFeedback('win', '🎉 <b>Luar biasa — semua jawabanmu benar dan lengkap!</b> Semua pasangan faktor dari ' + n + ' berhasil kamu temukan (total ' + total + ' pasangan). Latihan ini <b>tuntas</b>! Bilangan berikutnya menanti — tekan <b>Berikutnya ➡</b>.');
+    state.done[n] = true;
+    saveNow();
+    confetti();
+  }
+}
+
+/* ================= Papan progres ================= */
+function openBoard(){
+  var cur = curNumber();
+  var html = '';
+  for(var n = NUM_MIN; n <= NUM_MAX; n++){
+    var cls = state.done[n] ? 'done' : (hasContent(n) ? 'started' : 'todo');
+    html += '<button class="st ' + cls + (n === cur ? ' cur' : '') + '" data-action="jump" data-n="' + n + '" title="Latihan ' + (n-1) + ' — bilangan ' + n + '">' + n + '</button>';
+  }
+  bgridEl.innerHTML = html;
+  bstatsEl.innerHTML = 'Tuntas: <b style="color:#15803d">' + doneCount() + '</b> bilangan &nbsp;·&nbsp; Sedang dikerjakan: <b style="color:#b45309">' + startedCount() + '</b> bilangan &nbsp;·&nbsp; Total: 100 bilangan (2 sampai 101)';
+  boardEl.hidden = false;
+}
+function closeModal(){ boardEl.hidden = true; }
+
+/* ================= Konfeti ================= */
+function confetti(){
+  var w = document.createElement('div');
+  w.className = 'confetti-wrap';
+  w.setAttribute('aria-hidden','true');
+  for(var i = 0; i < 90; i++){
+    var p = document.createElement('i');
+    p.style.left = (Math.random()*100) + '%';
+    p.style.background = COLORS[i % COLORS.length];
+    p.style.animationDelay = (Math.random()*0.7) + 's';
+    p.style.animationDuration = (2.4 + Math.random()*1.8) + 's';
+    p.style.width = (7 + Math.random()*6) + 'px';
+    p.style.height = (10 + Math.random()*8) + 'px';
+    w.appendChild(p);
+  }
+  document.body.appendChild(w);
+  setTimeout(function(){ if(w.parentNode) w.parentNode.removeChild(w); }, 4600);
+}
+
+/* ================= Aksi global (klik) ================= */
+document.addEventListener('click', function(e){
+  var el = e.target.closest('[data-action]');
+  if(!el) return;
+  var a = el.getAttribute('data-action');
+  switch(a){
+    case 'prev': go(state.last - 1); break;
+    case 'next': go(state.last + 1); break;
+    case 'home': go(0); break;
+    case 'start': go(NUM_MIN); break;
+    case 'guide': go(1); break;
+    case 'board': openBoard(); break;
+    case 'closeboard': closeModal(); break;
+    case 'jump': closeModal(); go(parseInt(el.getAttribute('data-n'),10)); break;
+    case 'add': addRow(true); break;
+    case 'del': delRow(); break;
+    case 'check': check(); break;
+    case 'reset': resetEx(); break;
+    case 'full':
+      try{
+        if(document.fullscreenElement){ if(document.exitFullscreen) document.exitFullscreen(); }
+        else if(document.documentElement.requestFullscreen){
+          var p = document.documentElement.requestFullscreen();
+          if(p && p.catch) p.catch(function(){});
+        }
+      }catch(err){}
+      break;
+  }
+});
+
+/* ================= Simpan isian saat mengetik ================= */
+slideEl.addEventListener('input', function(e){
+  var t = e.target;
+  if(!t.matches || !t.matches('input')) return;
+  var row = t.closest('.row');
+  if(!row) return;
+  var n = curNumber();
+  if(n == null) return;
+  var rows = getRows(n);
+  var idx = parseInt(row.getAttribute('data-idx'), 10);
+  if(!rows[idx]) return;
+  rows[idx][ t.classList.contains('fa') ? 0 : 1 ] = t.value;
+  row.classList.remove('ok','bad','dup');
+  var ico = row.querySelector('.ico');
+  if(ico) ico.textContent = '';
+  save();
+});
+
+/* ================= Enter: lompat antar kotak ================= */
+slideEl.addEventListener('keydown', function(e){
+  if(e.key !== 'Enter') return;
+  var t = e.target;
+  if(!t.matches || !t.matches('input')) return;
+  var row = t.closest('.row');
+  if(!row) return;
+  e.preventDefault();
+  if(t.classList.contains('fa')){
+    var fb2 = row.querySelector('.fb');
+    if(fb2) fb2.focus();
+  } else {
+    var rows = Array.prototype.slice.call(slideEl.querySelectorAll('#rows .row'));
+    var idx = rows.indexOf(row);
+    if(idx > -1 && idx < rows.length - 1){
+      var nextFa = rows[idx+1].querySelector('.fa');
+      if(nextFa) nextFa.focus();
+    } else {
+      check();
+    }
+  }
+});
+
+/* ================= Keyboard global ================= */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){ if(!boardEl.hidden){ closeModal(); } return; }
+  if(!boardEl.hidden) return;
+  var tag = (e.target && e.target.tagName || '').toLowerCase();
+  if(tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  if(e.key === 'ArrowRight' || e.key === 'PageDown'){ go(state.last + 1); }
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ go(state.last - 1); }
+});
+
+/* ================= Mulai ================= */
+render();
+})();
+</script>
+</body>
+</html>
